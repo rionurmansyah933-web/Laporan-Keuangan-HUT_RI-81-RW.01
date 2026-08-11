@@ -233,7 +233,7 @@
               <th class="px-4 py-3.5 text-right">Debit</th>
               <th class="px-4 py-3.5 text-right">Kredit</th>
               <th class="px-4 py-3.5 text-right">Saldo</th>
-              <th class="px-4 py-3.5 text-center w-24 no-print">Aksi</th>
+              <th class="px-4 py-3.5 text-center w-28 no-print">Aksi</th>
             </tr>
           </thead>
           <tbody id="tx-body" class="divide-y divide-slate-100 font-medium"></tbody>
@@ -246,11 +246,78 @@
 
   </main>
 
+  <!-- MODAL EDIT TRANSAKSI -->
+  <div id="modal-edit" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4 no-print">
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-2xl w-full max-w-lg p-6 space-y-5 animate-in fade-in zoom-in-95 duration-200">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <div class="flex items-center gap-2">
+          <div class="p-2 bg-amber-50 text-amber-600 rounded-lg">
+            <i data-lucide="edit-3" class="w-5 h-5"></i>
+          </div>
+          <h3 class="text-base font-bold text-slate-900">Edit Data Transaksi</h3>
+        </div>
+        <button type="button" id="btn-close-edit" class="text-slate-400 hover:text-slate-600 p-1">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form id="edit-form" class="space-y-4">
+        <input type="hidden" id="edit-id">
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Tanggal</label>
+            <input id="edit-tanggal" type="date" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-medium focus:ring-2 focus:ring-amber-500 outline-none" required>
+          </div>
+          <div>
+            <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Jenis</label>
+            <select id="edit-jenis" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-medium focus:ring-2 focus:ring-amber-500 outline-none" required>
+              <option value="debit">Debit (Masuk)</option>
+              <option value="kredit">Kredit (Keluar)</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Nama Transaksi</label>
+          <input id="edit-nama" type="text" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-medium focus:ring-2 focus:ring-amber-500 outline-none" required>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Kategori</label>
+            <select id="edit-kategori" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-medium focus:ring-2 focus:ring-amber-500 outline-none" required>
+              <option value="Iuran">Iuran Warga</option>
+              <option value="Sponsorship">Sponsorship / Donasi</option>
+              <option value="Hadiah & Lomba">Hadiah & Lomba</option>
+              <option value="Perlengkapan & Sewa">Perlengkapan & Sewa</option>
+              <option value="Konsumsi">Konsumsi Panitia/Acara</option>
+              <option value="Dekorasi & Pubdok">Dekorasi & Pubdok</option>
+              <option value="Lain-lain">Lain-lain</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Nominal (Rp)</label>
+            <input id="edit-nominal" type="number" min="0" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-medium focus:ring-2 focus:ring-amber-500 outline-none" required>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Keterangan</label>
+          <input id="edit-ket" type="text" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-medium focus:ring-2 focus:ring-amber-500 outline-none">
+        </div>
+
+        <div class="flex justify-end gap-2 pt-2 border-t border-slate-100">
+          <button type="button" id="btn-cancel-edit" class="px-4 py-2 bg-slate-100 text-slate-600 rounded-xl text-xs font-bold hover:bg-slate-200">Batal</button>
+          <button type="submit" id="btn-save-edit" class="px-5 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-bold shadow-sm flex items-center gap-1.5">
+            <i data-lucide="save" class="w-4 h-4"></i> Update Data
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <script>
   (async () => {
-    // ------------------------------------------------------------------------
-    // KUNCI DAN URL SUPABASE SUDAH DISESUAIKAN SECARA OTOMATIS
-    // ------------------------------------------------------------------------
     const SUPABASE_URL = 'https://irbqorrvjkwzvoltftjl.supabase.co';
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlyYnFvcnJ2amt3enZvbHRmdGpsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY0MDkwODEsImV4cCI6MjEwMTk4NTA4MX0.WSSz7eeBFORNsyaPrS3KQnASHiC-I6UokiMHfWz9Hc4';
     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -274,7 +341,6 @@
       render();
     }
 
-    // Realtime listener dari Supabase
     supabase
       .channel('public:transactions')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'transactions' }, () => loadDataFromSupabase())
@@ -387,6 +453,9 @@
           <td class="px-4 py-3 text-right font-bold text-rose-600">${r.jenis==='kredit'?fmt(r.nominal):'-'}</td>
           <td class="px-4 py-3 text-right font-extrabold text-slate-900">${fmt(saldo)}</td>
           <td class="px-4 py-3 text-center space-x-1 no-print">
+            <button type="button" class="text-slate-400 hover:text-amber-600 p-1" title="Edit Data" onclick="openEditModal('${r.id}')">
+              <i data-lucide="edit-2" class="w-4 h-4"></i>
+            </button>
             <button type="button" class="text-slate-400 hover:text-sky-600 p-1" title="Cetak Kwitansi" onclick="printReceipt('${r.id}')">
               <i data-lucide="receipt" class="w-4 h-4"></i>
             </button>
@@ -408,6 +477,55 @@
         });
       });
     }
+
+    // Modal Edit Functions
+    window.openEditModal = function(id) {
+      const item = allData.find(r => r.id === id);
+      if (!item) return;
+
+      $('edit-id').value = item.id;
+      $('edit-tanggal').value = item.tanggal;
+      $('edit-jenis').value = item.jenis;
+      $('edit-nama').value = item.nama;
+      $('edit-kategori').value = item.kategori;
+      $('edit-nominal').value = item.nominal;
+      $('edit-ket').value = item.keterangan || '';
+
+      $('modal-edit').classList.remove('hidden');
+    };
+
+    function closeEditModal() {
+      $('modal-edit').classList.add('hidden');
+    }
+
+    $('btn-close-edit').addEventListener('click', closeEditModal);
+    $('btn-cancel-edit').addEventListener('click', closeEditModal);
+
+    $('edit-form').addEventListener('submit', async e => {
+      e.preventDefault();
+      const btn = $('btn-save-edit');
+      btn.disabled = true;
+
+      const id = $('edit-id').value;
+      const updatedTx = {
+        tanggal: $('edit-tanggal').value,
+        jenis: $('edit-jenis').value,
+        nama: $('edit-nama').value,
+        kategori: $('edit-kategori').value,
+        nominal: Number($('edit-nominal').value) || 0,
+        keterangan: $('edit-ket').value
+      };
+
+      const { error } = await supabase.from('transactions').update(updatedTx).eq('id', id);
+      btn.disabled = false;
+
+      if (error) {
+        alert('Gagal mengupdate data: ' + error.message);
+      } else {
+        closeEditModal();
+        loadDataFromSupabase();
+      }
+    });
 
     $('btn-save-target').addEventListener('click', saveTarget);
 
