@@ -442,29 +442,29 @@
 
       let saldo = 0;
       const rows = filtered.map((r,i) => {
-        saldo += r.jenis === 'debit' ? (r.nominal||0) : -(r.nominal||0);
-        return `<tr class="hover:bg-slate-50 transition-colors">
-          <td class="px-4 py-3 text-center text-slate-400 font-normal">${i+1}</td>
-          <td class="px-4 py-3 text-slate-600">${r.tanggal||'-'}</td>
-          <td class="px-4 py-3 font-bold text-slate-800">${r.nama||'-'}</td>
-          <td class="px-4 py-3"><span class="bg-slate-100 text-slate-700 text-xs px-2.5 py-1 rounded-md font-semibold">${r.kategori||'Umum'}</span></td>
-          <td class="px-4 py-3 text-slate-500 font-normal">${r.keterangan||'-'}</td>
-          <td class="px-4 py-3 text-right font-bold text-emerald-600">${r.jenis==='debit'?fmt(r.nominal):'-'}</td>
-          <td class="px-4 py-3 text-right font-bold text-rose-600">${r.jenis==='kredit'?fmt(r.nominal):'-'}</td>
-          <td class="px-4 py-3 text-right font-extrabold text-slate-900">${fmt(saldo)}</td>
-          <td class="px-4 py-3 text-center space-x-1 no-print">
-            <button type="button" class="text-slate-400 hover:text-amber-600 p-1" title="Edit Data" onclick="openEditModal('${r.id}')">
-              <i data-lucide="edit-2" class="w-4 h-4"></i>
-            </button>
-            <button type="button" class="text-slate-400 hover:text-sky-600 p-1" title="Cetak Kwitansi" onclick="printReceipt('${r.id}')">
-              <i data-lucide="receipt" class="w-4 h-4"></i>
-            </button>
-            <button type="button" class="text-slate-400 hover:text-rose-600 p-1" title="Hapus Baris" data-del="${r.id}">
-              <i data-lucide="trash-2" class="w-4 h-4"></i>
-            </button>
-          </td>
-        </tr>`;
-      });
+  saldo += r.jenis === 'debit' ? (r.nominal||0) : -(r.nominal||0);
+  return `<tr class="hover:bg-slate-50 transition-colors">
+    <td class="px-4 py-3 text-center text-slate-400 font-normal">${i+1}</td>
+    <td class="px-4 py-3 text-slate-600">${r.tanggal||'-'}</td>
+    <td class="px-4 py-3 font-bold text-slate-800">${r.nama||'-'}</td>
+    <td class="px-4 py-3"><span class="bg-slate-100 text-slate-700 text-xs px-2.5 py-1 rounded-md font-semibold">${r.kategori||'Umum'}</span></td>
+    <td class="px-4 py-3 text-slate-500 font-normal">${r.keterangan||'-'}</td>
+    <td class="px-4 py-3 text-right font-bold text-emerald-600">${r.jenis==='debit'?fmt(r.nominal):'-'}</td>
+    <td class="px-4 py-3 text-right font-bold text-rose-600">${r.jenis==='kredit'?fmt(r.nominal):'-'}</td>
+    <td class="px-4 py-3 text-right font-extrabold text-slate-900">${fmt(saldo)}</td>
+    <td class="px-4 py-3 text-center space-x-1 no-print">
+      <button type="button" class="text-slate-500 hover:text-amber-600 p-1.5 rounded-lg hover:bg-amber-50 transition-colors inline-flex items-center justify-center" title="Edit Data" onclick="openEditModal('${r.id}')">
+        <i data-lucide="edit" style="width:16px;height:16px;"></i>
+      </button>
+      <button type="button" class="text-slate-500 hover:text-sky-600 p-1.5 rounded-lg hover:bg-sky-50 transition-colors inline-flex items-center justify-center" title="Cetak Kwitansi" onclick="printReceipt('${r.id}')">
+        <i data-lucide="receipt" style="width:16px;height:16px;"></i>
+      </button>
+      <button type="button" class="text-slate-500 hover:text-rose-600 p-1.5 rounded-lg hover:bg-rose-50 transition-colors inline-flex items-center justify-center" title="Hapus Baris" data-del="${r.id}">
+        <i data-lucide="trash-2" style="width:16px;height:16px;"></i>
+      </button>
+    </td>
+  </tr>`;
+});
 
       tbody.innerHTML = rows.join('');
       lucide.createIcons();
