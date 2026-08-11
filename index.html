@@ -12,6 +12,12 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Config PWA Meta Tags -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0f172a">
+  <link rel="apple-touch-icon" href="https://irbqorrvjkwzvoltftjl.supabase.co/storage/v1/object/public/assets/logo-rw01.jpg">
+
   <style>
     body { font-family: 'Plus Jakarta Sans', sans-serif; }
     .btn-action { transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
@@ -29,8 +35,8 @@
     <div class="max-w-7xl mx-auto px-6 py-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
       <div>
         <div class="flex items-center gap-2">
-          <span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs font-semibold px-2.5 py-0.5 rounded-full">RW.01 Tahun 2026</span>
-          <span class="text-slate-400 text-xs">• @sekretariatrw@gmail.com-Sistem Keuangan terpadu</span>
+          <span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs font-semibold px-2 py-0.5 rounded-full">RW.01 Tahun 2026</span>
+          <span class="text-slate-400 text-xs">• @sekretariatrw@gmail.com-Sistem Keuangan Terpadu</span>
         </div>
         <h1 class="text-2xl font-extrabold tracking-tight mt-1 text-white">Laporan Keuangan HUT RI ke-81</h1>
       </div>
@@ -149,7 +155,7 @@
         <div>
           <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">Kategori Transaksi</label>
           <select id="inp-kategori" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm font-medium focus:bg-white focus:ring-2 focus:ring-emerald-500 outline-none transition-all" required>
-            <option value="Iuran">Iuran Warga</option>
+            <option value="LIST">List Warga</option>
             <option value="Sponsorship">Sponsorship / Donasi</option>
             <option value="Hadiah & Lomba">Hadiah & Lomba</option>
             <option value="Perlengkapan & Sewa">Perlengkapan & Sewa</option>
@@ -195,7 +201,7 @@
           </select>
           <select id="filter-kategori" class="bg-white border border-slate-200 rounded-xl px-3.5 py-2 text-sm focus:ring-2 focus:ring-slate-400 outline-none shadow-sm font-medium text-slate-600">
             <option value="">Semua Kategori</option>
-            <option value="Iuran">Iuran</option>
+            <option value="LIST">List Warga</option>
             <option value="Sponsorship">Sponsorship</option>
             <option value="Hadiah & Lomba">Hadiah & Lomba</option>
             <option value="Perlengkapan & Sewa">Perlengkapan</option>
@@ -318,9 +324,7 @@
 
   <script>
   (async () => {
-    // -------------------------------------------------------------
-    // ATUR PASSWORD AKSES PANITIA DI SINI (DAPAT DIUBAH KAPAN SAJA)
-    // -------------------------------------------------------------
+    // ADMIN PASSWORD
     const ADMIN_PASSWORD = '81'; 
 
     function verifyPassword() {
@@ -470,17 +474,12 @@
           <td class="px-4 py-3 text-right font-bold text-rose-600">${r.jenis==='kredit'?fmt(r.nominal):'-'}</td>
           <td class="px-4 py-3 text-right font-extrabold text-slate-900">${fmt(saldo)}</td>
           <td class="px-4 py-3 text-center space-x-1 no-print">
-            <!-- IKON EDIT (PENSIL) SVG -->
             <button type="button" class="text-slate-500 hover:text-amber-600 p-1.5 rounded-lg hover:bg-amber-50 transition-colors inline-flex items-center justify-center" title="Edit Data" onclick="openEditModal('${r.id}')">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
             </button>
-
-            <!-- IKON KWITANSI SVG -->
             <button type="button" class="text-slate-500 hover:text-sky-600 p-1.5 rounded-lg hover:bg-sky-50 transition-colors inline-flex items-center justify-center" title="Cetak Kwitansi" onclick="printReceipt('${r.id}')">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 6v12"/></svg>
             </button>
-
-            <!-- IKON HAPUS SVG -->
             <button type="button" class="text-slate-500 hover:text-rose-600 p-1.5 rounded-lg hover:bg-rose-50 transition-colors inline-flex items-center justify-center" title="Hapus Baris" data-del="${r.id}">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
             </button>
@@ -491,11 +490,9 @@
       tbody.innerHTML = rows.join('');
       lucide.createIcons();
 
-      // Proteksi Password saat Hapus Per Baris
       tbody.querySelectorAll('[data-del]').forEach(btn => {
         btn.addEventListener('click', async () => {
           if (!verifyPassword()) return;
-
           const id = btn.dataset.del;
           await supabase.from('transactions').delete().eq('id', id);
           loadDataFromSupabase();
@@ -503,7 +500,7 @@
       });
     }
 
-    // Modal Edit Functions dengan Proteksi Password
+    // Modal Edit Functions
     window.openEditModal = function(id) {
       if (!verifyPassword()) return;
 
@@ -593,7 +590,6 @@
       win.document.close();
     };
 
-    // Proteksi Password saat Tambah Data Baru
     $('tx-form').addEventListener('submit', async e => {
       e.preventDefault();
 
@@ -634,7 +630,6 @@
     $('btn-reset').addEventListener('click', () => $('reset-confirm').classList.remove('hidden'));
     $('reset-no').addEventListener('click', () => $('reset-confirm').classList.add('hidden'));
     
-    // Proteksi Password saat Reset Semua Data
     $('reset-yes').addEventListener('click', async () => {
       $('reset-confirm').classList.add('hidden');
 
@@ -698,6 +693,15 @@
       XLSX.utils.book_append_sheet(wb, ws, 'Transaksi');
       XLSX.writeFile(wb, 'laporan-keuangan-hut-ri-81.xlsx');
     });
+
+    // Registrasi Service Worker PWA (Di dalam tag script)
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+          .then(reg => console.log('Service Worker registered!'))
+          .catch(err => console.error('Service Worker failed:', err));
+      });
+    }
 
     loadDataFromSupabase();
     lucide.createIcons();
