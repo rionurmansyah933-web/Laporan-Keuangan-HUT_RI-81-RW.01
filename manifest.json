@@ -1,8 +1,9 @@
 {
   "name": "Laporan Keuangan HUT RI 81",
   "short_name": "Keuangan RW01",
-  "description": "Integrated Make Work More Simple and Quality - Sistem Keuangan Terpadu RW.01",
-  "start_url": "./index.html",
+  "description": "INTEGRATED MAKE WORK MORE SIMPLE AND QUALITY",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#0f172a",
   "theme_color": "#0f172a",
