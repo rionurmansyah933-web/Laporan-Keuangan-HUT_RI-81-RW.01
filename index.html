@@ -30,7 +30,7 @@
       <div>
         <div class="flex items-center gap-2">
           <span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs font-semibold px-2.5 py-0.5 rounded-full">RW.01 Tahun 2026</span>
-          <span class="text-slate-400 text-xs">• Connected to Supabase</span>
+          <span class="text-slate-400 text-xs">• @sekretariatrw@gmail.com-Sistem Keuangan terpadu</span>
         </div>
         <h1 class="text-2xl font-extrabold tracking-tight mt-1 text-white">Laporan Keuangan HUT RI ke-81</h1>
       </div>
@@ -133,7 +133,7 @@
         </div>
         <div>
           <h2 class="text-lg font-bold text-slate-900">Tambah Transaksi Baru</h2>
-          <p class="text-xs text-slate-500">Data otomatis tersimpan & tersinkronisasi secara real-time</p>
+          <p class="text-xs text-slate-500">Memerlukan Password Panitia untuk menyimpan data</p>
         </div>
       </div>
 
@@ -175,7 +175,7 @@
         </div>
         <div class="md:col-span-3 flex justify-end pt-2">
           <button type="submit" id="btn-submit" class="btn-action bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2 shadow-sm">
-            <i data-lucide="check-circle" class="w-4 h-4"></i> Simpan Ke Database
+            <i data-lucide="lock" class="w-4 h-4"></i> Simpan Ke Database
           </button>
         </div>
       </form>
@@ -286,7 +286,7 @@
           <div>
             <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Kategori</label>
             <select id="edit-kategori" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-medium focus:ring-2 focus:ring-amber-500 outline-none" required>
-              <option value="Iuran">Iuran Warga</option>
+              <option value="LIST">List Warga</option>
               <option value="Sponsorship">Sponsorship / Donasi</option>
               <option value="Hadiah & Lomba">Hadiah & Lomba</option>
               <option value="Perlengkapan & Sewa">Perlengkapan & Sewa</option>
@@ -318,6 +318,21 @@
 
   <script>
   (async () => {
+    // -------------------------------------------------------------
+    // ATUR PASSWORD AKSES PANITIA DI SINI (DAPAT DIUBAH KAPAN SAJA)
+    // -------------------------------------------------------------
+    const ADMIN_PASSWORD = '81'; 
+
+    function verifyPassword() {
+      const pass = prompt('Masukkan Password Panitia / Admin untuk melanjutkan aksi:');
+      if (pass === ADMIN_PASSWORD) {
+        return true;
+      } else {
+        alert('Password Salah! Akses Ditolak.');
+        return false;
+      }
+    }
+
     const SUPABASE_URL = 'https://irbqorrvjkwzvoltftjl.supabase.co';
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlyYnFvcnJ2amt3enZvbHRmdGpsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY0MDkwODEsImV4cCI6MjEwMTk4NTA4MX0.WSSz7eeBFORNsyaPrS3KQnASHiC-I6UokiMHfWz9Hc4';
     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -347,6 +362,8 @@
       .subscribe();
 
     async function saveTarget() {
+      if (!verifyPassword()) return;
+
       const rawInput = $('inp-target-manual').value.replace(/[^0-9]/g, '');
       const val = Number(rawInput);
 
@@ -442,35 +459,43 @@
 
       let saldo = 0;
       const rows = filtered.map((r,i) => {
-  saldo += r.jenis === 'debit' ? (r.nominal||0) : -(r.nominal||0);
-  return `<tr class="hover:bg-slate-50 transition-colors">
-    <td class="px-4 py-3 text-center text-slate-400 font-normal">${i+1}</td>
-    <td class="px-4 py-3 text-slate-600">${r.tanggal||'-'}</td>
-    <td class="px-4 py-3 font-bold text-slate-800">${r.nama||'-'}</td>
-    <td class="px-4 py-3"><span class="bg-slate-100 text-slate-700 text-xs px-2.5 py-1 rounded-md font-semibold">${r.kategori||'Umum'}</span></td>
-    <td class="px-4 py-3 text-slate-500 font-normal">${r.keterangan||'-'}</td>
-    <td class="px-4 py-3 text-right font-bold text-emerald-600">${r.jenis==='debit'?fmt(r.nominal):'-'}</td>
-    <td class="px-4 py-3 text-right font-bold text-rose-600">${r.jenis==='kredit'?fmt(r.nominal):'-'}</td>
-    <td class="px-4 py-3 text-right font-extrabold text-slate-900">${fmt(saldo)}</td>
-    <td class="px-4 py-3 text-center space-x-1 no-print">
-      <button type="button" class="text-slate-500 hover:text-amber-600 p-1.5 rounded-lg hover:bg-amber-50 transition-colors inline-flex items-center justify-center" title="Edit Data" onclick="openEditModal('${r.id}')">
-        <i data-lucide="edit" style="width:16px;height:16px;"></i>
-      </button>
-      <button type="button" class="text-slate-500 hover:text-sky-600 p-1.5 rounded-lg hover:bg-sky-50 transition-colors inline-flex items-center justify-center" title="Cetak Kwitansi" onclick="printReceipt('${r.id}')">
-        <i data-lucide="receipt" style="width:16px;height:16px;"></i>
-      </button>
-      <button type="button" class="text-slate-500 hover:text-rose-600 p-1.5 rounded-lg hover:bg-rose-50 transition-colors inline-flex items-center justify-center" title="Hapus Baris" data-del="${r.id}">
-        <i data-lucide="trash-2" style="width:16px;height:16px;"></i>
-      </button>
-    </td>
-  </tr>`;
-});
+        saldo += r.jenis === 'debit' ? (r.nominal||0) : -(r.nominal||0);
+        return `<tr class="hover:bg-slate-50 transition-colors">
+          <td class="px-4 py-3 text-center text-slate-400 font-normal">${i+1}</td>
+          <td class="px-4 py-3 text-slate-600">${r.tanggal||'-'}</td>
+          <td class="px-4 py-3 font-bold text-slate-800">${r.nama||'-'}</td>
+          <td class="px-4 py-3"><span class="bg-slate-100 text-slate-700 text-xs px-2.5 py-1 rounded-md font-semibold">${r.kategori||'Umum'}</span></td>
+          <td class="px-4 py-3 text-slate-500 font-normal">${r.keterangan||'-'}</td>
+          <td class="px-4 py-3 text-right font-bold text-emerald-600">${r.jenis==='debit'?fmt(r.nominal):'-'}</td>
+          <td class="px-4 py-3 text-right font-bold text-rose-600">${r.jenis==='kredit'?fmt(r.nominal):'-'}</td>
+          <td class="px-4 py-3 text-right font-extrabold text-slate-900">${fmt(saldo)}</td>
+          <td class="px-4 py-3 text-center space-x-1 no-print">
+            <!-- IKON EDIT (PENSIL) SVG -->
+            <button type="button" class="text-slate-500 hover:text-amber-600 p-1.5 rounded-lg hover:bg-amber-50 transition-colors inline-flex items-center justify-center" title="Edit Data" onclick="openEditModal('${r.id}')">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
+            </button>
+
+            <!-- IKON KWITANSI SVG -->
+            <button type="button" class="text-slate-500 hover:text-sky-600 p-1.5 rounded-lg hover:bg-sky-50 transition-colors inline-flex items-center justify-center" title="Cetak Kwitansi" onclick="printReceipt('${r.id}')">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 6v12"/></svg>
+            </button>
+
+            <!-- IKON HAPUS SVG -->
+            <button type="button" class="text-slate-500 hover:text-rose-600 p-1.5 rounded-lg hover:bg-rose-50 transition-colors inline-flex items-center justify-center" title="Hapus Baris" data-del="${r.id}">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+            </button>
+          </td>
+        </tr>`;
+      });
 
       tbody.innerHTML = rows.join('');
       lucide.createIcons();
 
+      // Proteksi Password saat Hapus Per Baris
       tbody.querySelectorAll('[data-del]').forEach(btn => {
         btn.addEventListener('click', async () => {
+          if (!verifyPassword()) return;
+
           const id = btn.dataset.del;
           await supabase.from('transactions').delete().eq('id', id);
           loadDataFromSupabase();
@@ -478,8 +503,10 @@
       });
     }
 
-    // Modal Edit Functions
+    // Modal Edit Functions dengan Proteksi Password
     window.openEditModal = function(id) {
+      if (!verifyPassword()) return;
+
       const item = allData.find(r => r.id === id);
       if (!item) return;
 
@@ -566,8 +593,12 @@
       win.document.close();
     };
 
+    // Proteksi Password saat Tambah Data Baru
     $('tx-form').addEventListener('submit', async e => {
       e.preventDefault();
+
+      if (!verifyPassword()) return;
+
       const btn = $('btn-submit');
       btn.disabled = true;
 
@@ -602,8 +633,13 @@
 
     $('btn-reset').addEventListener('click', () => $('reset-confirm').classList.remove('hidden'));
     $('reset-no').addEventListener('click', () => $('reset-confirm').classList.add('hidden'));
+    
+    // Proteksi Password saat Reset Semua Data
     $('reset-yes').addEventListener('click', async () => {
       $('reset-confirm').classList.add('hidden');
+
+      if (!verifyPassword()) return;
+
       await supabase.from('transactions').delete().neq('id', '0');
       loadDataFromSupabase();
     });
