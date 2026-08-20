@@ -12,9 +12,9 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  
-  <!-- Config PWA Meta Tags -->
-  <link rel="manifest" href="manifest.json">
+
+  <!-- Config PWA Meta Tags (Relatif untuk GitHub Pages) -->
+  <link rel="manifest" href="./manifest.json">
   <meta name="theme-color" content="#0f172a">
   <link rel="apple-touch-icon" href="https://irbqorrvjkwzvoltftjl.supabase.co/storage/v1/object/public/assets/logo-rw01.jpg">
 
@@ -41,6 +41,11 @@
         <h1 class="text-2xl font-extrabold tracking-tight mt-1 text-white">Laporan Keuangan HUT RI ke-81</h1>
       </div>
       <div class="flex flex-wrap items-center gap-2">
+        <button type="button" id="btn-import" class="btn-action px-3.5 py-2 rounded-xl text-xs font-bold bg-indigo-600 hover:bg-indigo-500 text-white flex items-center gap-2 shadow-sm">
+          <i data-lucide="upload" class="w-4 h-4"></i> Import Excel
+        </button>
+        <input type="file" id="inp-file-excel" accept=".xlsx, .xls, .csv" class="hidden">
+
         <button type="button" id="btn-wa" class="btn-action px-3.5 py-2 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white flex items-center gap-2 shadow-sm">
           <i data-lucide="share-2" class="w-4 h-4"></i> Bagikan WA
         </button>
@@ -58,7 +63,7 @@
   </header>
 
   <main class="max-w-7xl mx-auto px-6 py-8 space-y-8">
-    
+
     <!-- Stats Cards -->
     <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
       <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm relative overflow-hidden">
@@ -89,7 +94,7 @@
           <h3 class="text-sm font-bold text-slate-900">Target Realisasi Pemasukan</h3>
           <p class="text-xs text-slate-500">Target anggaran tersimpan di cloud database Supabase</p>
         </div>
-        
+
         <div class="flex items-center gap-2 no-print">
           <div class="relative">
             <span class="absolute left-3 top-2.5 text-xs font-bold text-slate-400">Rp</span>
@@ -254,7 +259,7 @@
 
   <!-- MODAL EDIT TRANSAKSI -->
   <div id="modal-edit" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4 no-print">
-    <div class="bg-white rounded-2xl border border-slate-200 shadow-2xl w-full max-w-lg p-6 space-y-5 animate-in fade-in zoom-in-95 duration-200">
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-2xl w-full max-w-lg p-6 space-y-5">
       <div class="flex items-center justify-between border-b border-slate-100 pb-3">
         <div class="flex items-center gap-2">
           <div class="p-2 bg-amber-50 text-amber-600 rounded-lg">
@@ -444,7 +449,7 @@
 
       $('inp-target-manual').value = targetBudget;
       $('lbl-target-val').textContent = `${fmt(totalIn)} / ${fmt(targetBudget)}`;
-      
+
       const percent = targetBudget > 0 ? Math.min(100, Math.round((totalIn / targetBudget) * 100)) : 0;
       $('target-progress-bar').style.width = percent + '%';
       $('target-percent-text').textContent = percent + '% TERCAPAI';
@@ -620,6 +625,72 @@
       }
     });
 
+    // HANDLER IMPORT FILE EXCEL / CSV
+    $('btn-import').addEventListener('click', () => {
+      if (!verifyPassword()) return;
+      $('inp-file-excel').click();
+    });
+
+    $('inp-file-excel').addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = async (evt) => {
+        try {
+          const data = new Uint8Array(evt.target.result);
+          const workbook = XLSX.read(data, { type: 'array' });
+          const firstSheet = workbook.SheetNames[0];
+          const worksheet = workbook.Sheets[firstSheet];
+          
+          const jsonRows = XLSX.utils.sheet_to_json(worksheet, { defval: '' });
+
+          if (!jsonRows.length) {
+            alert('File Excel kosong atau tidak terbaca.');
+            return;
+          }
+
+          const newTransactions = jsonRows.map((row, idx) => {
+            const getVal = (keys) => {
+              const foundKey = Object.keys(row).find(k => keys.includes(k.trim().toLowerCase()));
+              return foundKey ? row[foundKey] : '';
+            };
+
+            const rawJenis = String(getVal(['jenis', 'tipe', 'jenis transaksi'])).toLowerCase();
+            const jenis = rawJenis.includes('masuk') || rawJenis === 'debit' ? 'debit' : 'kredit';
+
+            return {
+              id: 'tx_' + Date.now() + '_' + idx + '_' + Math.random().toString(36).substring(2, 6),
+              tanggal: String(getVal(['tanggal', 'tgl']) || new Date().toISOString().slice(0, 10)),
+              nama: String(getVal(['nama', 'nama transaksi', 'uraian']) || 'Transaksi Import'),
+              kategori: String(getVal(['kategori']) || 'Lain-lain'),
+              jenis: jenis,
+              nominal: Number(String(getVal(['nominal', 'jumlah', 'debit', 'kredit'])).replace(/[^0-9]/g, '')) || 0,
+              keterangan: String(getVal(['keterangan', 'catatan']) || 'Import Excel')
+            };
+          });
+
+          if (confirm(`Ditemukan ${newTransactions.length} data. Lanjutkan mengunggah dan menambahkan ke database?`)) {
+            const { error } = await supabase.from('transactions').insert(newTransactions);
+            
+            if (error) {
+              alert('Gagal mengimpor data: ' + error.message);
+            } else {
+              alert(`Berhasil mengimpor ${newTransactions.length} data transaksi baru!`);
+              loadDataFromSupabase();
+            }
+          }
+        } catch (err) {
+          alert('Gagal membaca file Excel. Pastikan format file sesuai.');
+          console.error(err);
+        } finally {
+          e.target.value = '';
+        }
+      };
+
+      reader.readAsArrayBuffer(file);
+    });
+
     $('inp-tanggal').value = new Date().toISOString().slice(0,10);
 
     ['inp-cari','filter-jenis','filter-kategori'].forEach(id => {
@@ -629,7 +700,7 @@
 
     $('btn-reset').addEventListener('click', () => $('reset-confirm').classList.remove('hidden'));
     $('reset-no').addEventListener('click', () => $('reset-confirm').classList.add('hidden'));
-    
+
     $('reset-yes').addEventListener('click', async () => {
       $('reset-confirm').classList.add('hidden');
 
@@ -694,10 +765,10 @@
       XLSX.writeFile(wb, 'laporan-keuangan-hut-ri-81.xlsx');
     });
 
-    // Registrasi Service Worker PWA (Di dalam tag script)
+    // Registrasi Service Worker PWA (Relatif untuk GitHub Pages)
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js')
+        navigator.serviceWorker.register('./sw.js', { scope: './' })
           .then(reg => console.log('Service Worker registered!'))
           .catch(err => console.error('Service Worker failed:', err));
       });
