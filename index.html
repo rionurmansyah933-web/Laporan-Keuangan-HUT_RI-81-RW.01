@@ -625,71 +625,121 @@
       }
     });
 
-    // HANDLER IMPORT FILE EXCEL / CSV
-    $('btn-import').addEventListener('click', () => {
-      if (!verifyPassword()) return;
-      $('inp-file-excel').click();
-    });
+    // HANDLER IMPORT FILE EXCEL / CSV (Disesuaikan khusus format Laporan Keuangan RW.01)
+$('btn-import').addEventListener('click', () => {
+  if (!verifyPassword()) return;
+  $('inp-file-excel').click();
+});
 
-    $('inp-file-excel').addEventListener('change', async (e) => {
-      const file = e.target.files[0];
-      if (!file) return;
+$('inp-file-excel').addEventListener('change', async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
 
-      const reader = new FileReader();
-      reader.onload = async (evt) => {
-        try {
-          const data = new Uint8Array(evt.target.result);
-          const workbook = XLSX.read(data, { type: 'array' });
-          const firstSheet = workbook.SheetNames[0];
-          const worksheet = workbook.Sheets[firstSheet];
-          
-          const jsonRows = XLSX.utils.sheet_to_json(worksheet, { defval: '' });
+  const reader = new FileReader();
+  reader.onload = async (evt) => {
+    try {
+      const data = new Uint8Array(evt.target.result);
+      const workbook = XLSX.read(data, { type: 'array' });
+      const firstSheet = workbook.SheetNames[0];
+      const worksheet = workbook.Sheets[firstSheet];
+      
+      // Convert sheet ke JSON (Membaca dari baris header di row 3)
+      const rawJson = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: '' });
 
-          if (!jsonRows.length) {
-            alert('File Excel kosong atau tidak terbaca.');
-            return;
-          }
-
-          const newTransactions = jsonRows.map((row, idx) => {
-            const getVal = (keys) => {
-              const foundKey = Object.keys(row).find(k => keys.includes(k.trim().toLowerCase()));
-              return foundKey ? row[foundKey] : '';
-            };
-
-            const rawJenis = String(getVal(['jenis', 'tipe', 'jenis transaksi'])).toLowerCase();
-            const jenis = rawJenis.includes('masuk') || rawJenis === 'debit' ? 'debit' : 'kredit';
-
-            return {
-              id: 'tx_' + Date.now() + '_' + idx + '_' + Math.random().toString(36).substring(2, 6),
-              tanggal: String(getVal(['tanggal', 'tgl']) || new Date().toISOString().slice(0, 10)),
-              nama: String(getVal(['nama', 'nama transaksi', 'uraian']) || 'Transaksi Import'),
-              kategori: String(getVal(['kategori']) || 'Lain-lain'),
-              jenis: jenis,
-              nominal: Number(String(getVal(['nominal', 'jumlah', 'debit', 'kredit'])).replace(/[^0-9]/g, '')) || 0,
-              keterangan: String(getVal(['keterangan', 'catatan']) || 'Import Excel')
-            };
-          });
-
-          if (confirm(`Ditemukan ${newTransactions.length} data. Lanjutkan mengunggah dan menambahkan ke database?`)) {
-            const { error } = await supabase.from('transactions').insert(newTransactions);
-            
-            if (error) {
-              alert('Gagal mengimpor data: ' + error.message);
-            } else {
-              alert(`Berhasil mengimpor ${newTransactions.length} data transaksi baru!`);
-              loadDataFromSupabase();
-            }
-          }
-        } catch (err) {
-          alert('Gagal membaca file Excel. Pastikan format file sesuai.');
-          console.error(err);
-        } finally {
-          e.target.value = '';
+      // Cari baris tempat header berada (yang berisi kata 'Tanggal' atau 'Keterangan')
+      let headerIdx = -1;
+      for (let i = 0; i < Math.min(10, rawJson.length); i++) {
+        const rowStr = rawJson[i].join(' ').toLowerCase();
+        if (rowStr.includes('tanggal') && rowStr.includes('keterangan')) {
+          headerIdx = i;
+          break;
         }
-      };
+      }
 
-      reader.readAsArrayBuffer(file);
-    });
+      if (headerIdx === -1) {
+        alert('Format header Excel tidak dikenali. Pastikan ada kolom Tanggal dan Keterangan.');
+        return;
+      }
+
+      const headers = rawJson[headerIdx].map(h => String(h).trim().toLowerCase());
+      const dataRows = rawJson.slice(headerIdx + 1);
+
+      // Map indeks kolom
+      const idxTgl = headers.findIndex(h => h.includes('tanggal') || h.includes('tgl'));
+      const idxKet = headers.findIndex(h => h.includes('keterangan') && !h.includes('tambahan'));
+      const idxDebit = headers.findIndex(h => h.includes('debit'));
+      const idxKredit = headers.findIndex(h => h.includes('kredit'));
+      const idxKetAdd = headers.findIndex(h => h.includes('tambahan') || h.includes('rt'));
+
+      const newTransactions = [];
+
+      dataRows.forEach((row, idx) => {
+        // Abaikan baris kosong atau baris total/rekap
+        const ketVal = String(row[idxKet] || '').trim();
+        const tglVal = String(row[idxTgl] || '').trim();
+        
+        if (!ketVal || ketVal.toLowerCase().includes('total') || ketVal.toLowerCase().includes('jumlah')) return;
+
+        // Parse nominal Debit & Kredit
+        const debitNum = Number(String(row[idxDebit] || 0).replace(/[^0-9]/g, '')) || 0;
+        const kreditNum = Number(String(row[idxKredit] || 0).replace(/[^0-9]/g, '')) || 0;
+
+        if (debitNum === 0 && kreditNum === 0) return; // Skip jika tidak ada angka transaksi
+
+        // Tentukan Jenis Transaksi
+        const jenis = debitNum > 0 ? 'debit' : 'kredit';
+        const nominal = debitNum > 0 ? debitNum : kreditNum;
+
+        // Formating Tanggal (Dari DD/MM/YYYY ke YYYY-MM-DD)
+        let formattedDate = new Date().toISOString().slice(0, 10);
+        if (tglVal) {
+          const parts = tglVal.split('/');
+          if (parts.length === 3) {
+            formattedDate = `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
+          }
+        }
+
+        // Catatan Tambahan
+        const addKet = row[idxKetAdd] ? ` (${row[idxKetAdd]})` : '';
+
+        newTransactions.push({
+          id: 'tx_' + Date.now() + '_' + idx + '_' + Math.random().toString(36).substring(2, 6),
+          tanggal: formattedDate,
+          nama: ketVal,
+          kategori: 'Lain-lain', // Kategori default
+          jenis: jenis,
+          nominal: nominal,
+          keterangan: 'Import Excel' + addKet
+        });
+      });
+
+      if (!newTransactions.length) {
+        alert('Tidak ada data transaksi valid yang ditemukan di file Excel.');
+        return;
+      }
+
+      // Konfirmasi sebelum menyimpan
+      if (confirm(`Berhasil membaca ${newTransactions.length} transaksi dari file. Lanjutkan simpan ke Supabase?`)) {
+        const { error } = await supabase.from('transactions').insert(newTransactions);
+        
+        if (error) {
+          alert('Gagal mengimpor data ke database: ' + error.message);
+        } else {
+          alert(`Sukses! ${newTransactions.length} transaksi berhasil dimasukkan ke database.`);
+          loadDataFromSupabase();
+        }
+      }
+    } catch (err) {
+      alert('Gagal membaca file Excel. Pastikan file tidak rusak.');
+      console.error(err);
+    } finally {
+      e.target.value = ''; // Reset input file
+    }
+  };
+
+  reader.readAsArrayBuffer(file);
+});
+
 
     $('inp-tanggal').value = new Date().toISOString().slice(0,10);
 
