@@ -26,6 +26,24 @@
       .no-print { display: none !important; }
       body { background: white; color: black; }
     }
+
+    /* Style Logo Login */
+    .logo-wrapper {
+      width: 150px;
+      height: 150px;
+      margin: 0 auto 15px auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #f1f5f9;
+      border-radius: 20px;
+      overflow: hidden;
+    }
+    .app-logo {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
   </style>
 </head>
 <body class="min-h-screen bg-slate-50 text-slate-800 antialiased">
@@ -33,11 +51,14 @@
   <!-- GERBANG AKSES MASUK (LOGIN OVERLAY) -->
   <div id="login-overlay" class="fixed inset-0 z-50 bg-slate-900 flex items-center justify-center p-4">
     <div class="bg-white rounded-2xl p-8 max-w-md w-full shadow-2xl text-center space-y-6 no-print">
-      <div class="inline-flex p-4 bg-slate-100 rounded-2xl text-slate-900">
-        <i data-lucide="shield-lock" class="w-10 h-10 text-emerald-600"></i>
+      
+      <!-- Container Logo -->
+      <div class="logo-wrapper">
+        <img src="https://i.imgur.com/2AhJXOW.jpg" alt="Logo RW.01" class="app-logo">
       </div>
+
       <div>
-        <span class="bg-emerald-500/10 text-emerald-600 border border-emerald-500/20 text-xs font-bold px-2.5 py-1 rounded-full">RW.01 Tahun 2026</span>
+        <span class="bg-emerald-500/10 text-emerald-600 border border-emerald-500/20 text-xs font-bold px-2.5 py-1 rounded-full">HUT RI-81 RW.01 Tahun 2026</span>
         <h2 class="text-xl font-extrabold text-slate-900 mt-3">Akses Terkunci</h2>
         <p class="text-xs text-slate-500 mt-1">Masukkan Password Panitia untuk membuka Laporan Keuangan HUT RI ke-81</p>
       </div>
@@ -60,7 +81,7 @@
       <div>
         <div class="flex items-center gap-2">
           <span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs font-semibold px-2 py-0.5 rounded-full">RW.01 Tahun 2026</span>
-          <span class="text-slate-400 text-xs">• @sekretariatrw@gmail.com-Sistem Keuangan Terpadu</span>
+          <span class="text-slate-400 text-xs">• @sekretariatrw@gmail.com - Sistem Keuangan Terpadu V.2</span>
         </div>
         <h1 class="text-2xl font-extrabold tracking-tight mt-1 text-white">Laporan Keuangan HUT RI ke-81</h1>
       </div>
@@ -94,16 +115,16 @@
 
   <main class="max-w-7xl mx-auto px-6 py-8 space-y-8">
 
-    <!-- Stats Cards -->
+    <!-- Stats Cards Overall -->
     <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
       <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm relative overflow-hidden">
         <div class="absolute top-0 right-0 w-2 h-full bg-emerald-500"></div>
-        <p class="text-xs font-bold uppercase tracking-wider text-slate-400">Total Pemasukan</p>
+        <p class="text-xs font-bold uppercase tracking-wider text-slate-400">Total Pemasukan Kas</p>
         <p id="val-pemasukan" class="text-2xl font-extrabold text-emerald-600 mt-2">Rp 0</p>
       </div>
       <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm relative overflow-hidden">
         <div class="absolute top-0 right-0 w-2 h-full bg-rose-500"></div>
-        <p class="text-xs font-bold uppercase tracking-wider text-slate-400">Total Pengeluaran</p>
+        <p class="text-xs font-bold uppercase tracking-wider text-slate-400">Total Pengeluaran Kas</p>
         <p id="val-pengeluaran" class="text-2xl font-extrabold text-rose-600 mt-2">Rp 0</p>
       </div>
       <div class="bg-slate-900 text-white p-5 rounded-2xl shadow-md relative overflow-hidden">
@@ -121,7 +142,7 @@
     <section class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm space-y-4">
       <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div class="space-y-1">
-          <h3 class="text-sm font-bold text-slate-900">Target Realisasi Pemasukan</h3>
+          <h3 class="text-sm font-bold text-slate-900">Target Realisasi Pemasukan RW.01</h3>
           <p class="text-xs text-slate-500">Target anggaran tersimpan di cloud database Supabase</p>
         </div>
 
@@ -184,7 +205,7 @@
           <input id="inp-tanggal" type="date" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm font-medium focus:bg-white focus:ring-2 focus:ring-emerald-500 outline-none transition-all" required>
         </div>
         <div>
-          <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">Nama Transaksi</label>
+          <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">Nama Transaksi / Wilayah RT</label>
           <input id="inp-nama" type="text" placeholder="Contoh: Iuran RT 01 / Sewa Tenda" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm font-medium focus:bg-white focus:ring-2 focus:ring-emerald-500 outline-none transition-all" required>
         </div>
         <div>
@@ -196,6 +217,7 @@
             <option value="Perlengkapan & Sewa">Perlengkapan & Sewa</option>
             <option value="Konsumsi">Konsumsi Panitia/Acara</option>
             <option value="Dekorasi & Pubdok">Dekorasi & Pubdok</option>
+            <option value="Keamanan & Kebersihan">Keamanan & Kebersihan</option>
             <option value="Lain-lain">Lain-lain</option>
           </select>
         </div>
@@ -226,8 +248,8 @@
     <section class="space-y-4 no-print">
       <div class="flex flex-wrap items-center justify-between gap-4">
         <div class="flex flex-wrap items-center gap-3 flex-1">
-          <div class="min-w-[200px] flex-1">
-            <input id="inp-cari" type="text" placeholder="Cari nama/keterangan..." class="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2 text-sm focus:ring-2 focus:ring-slate-400 outline-none shadow-sm">
+          <div class="min-w-[220px] flex-1">
+            <input id="inp-cari" type="text" placeholder="Cari RT 01, RT 02, atau keterangan..." class="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2 text-sm focus:ring-2 focus:ring-slate-400 outline-none shadow-sm">
           </div>
           <select id="filter-jenis" class="bg-white border border-slate-200 rounded-xl px-3.5 py-2 text-sm focus:ring-2 focus:ring-slate-400 outline-none shadow-sm font-medium text-slate-600">
             <option value="">Semua Tipe</option>
@@ -242,6 +264,7 @@
             <option value="Perlengkapan & Sewa">Perlengkapan</option>
             <option value="Konsumsi">Konsumsi</option>
             <option value="Dekorasi & Pubdok">Dekorasi</option>
+            <option value="Keamanan & Kebersihan">Keamanan & Kebersihan</option>
             <option value="Lain-lain">Lain-lain</option>
           </select>
         </div>
@@ -261,6 +284,43 @@
       </div>
     </section>
 
+    <!-- PANEL ANALYTICS HASIL FILTER (DINAMIS & REAL-TIME) -->
+    <section id="filter-analytics-panel" class="bg-indigo-900 text-white rounded-2xl p-6 shadow-md space-y-4">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-2 border-b border-indigo-800 pb-3">
+        <div class="flex items-center gap-2">
+          <i data-lucide="line-chart" class="w-5 h-5 text-indigo-300"></i>
+          <h3 id="analytics-title" class="font-extrabold text-base tracking-wide text-indigo-100">Analisis Perolehan Filter</h3>
+        </div>
+        <span id="analytics-badge" class="bg-indigo-700 text-indigo-200 text-xs px-3 py-1 rounded-full font-bold self-start md:self-auto">Semua Data</span>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="bg-indigo-950/60 p-4 rounded-xl border border-indigo-800/50">
+          <p class="text-[11px] font-bold uppercase tracking-wider text-indigo-300">Total Perolehan Filter</p>
+          <p id="ana-nominal" class="text-xl font-extrabold text-emerald-400 mt-1">Rp 0</p>
+          <p id="ana-sub-nominal" class="text-[10px] text-indigo-300 mt-0.5">Pemasukan Terfilter</p>
+        </div>
+
+        <div class="bg-indigo-950/60 p-4 rounded-xl border border-indigo-800/50">
+          <p class="text-[11px] font-bold uppercase tracking-wider text-indigo-300">Kontribusi Terhadap Total Pemasukan Kas</p>
+          <p id="ana-share-kas" class="text-xl font-extrabold text-amber-300 mt-1">0%</p>
+          <p id="ana-sub-kas" class="text-[10px] text-indigo-300 mt-0.5">dari total kas masuk</p>
+        </div>
+
+        <div class="bg-indigo-950/60 p-4 rounded-xl border border-indigo-800/50">
+          <p class="text-[11px] font-bold uppercase tracking-wider text-indigo-300">Kontribusi Terhadap Target Anggaran</p>
+          <p id="ana-share-target" class="text-xl font-extrabold text-sky-300 mt-1">0%</p>
+          <p id="ana-sub-target" class="text-[10px] text-indigo-300 mt-0.5">dari target anggaran</p>
+        </div>
+
+        <div class="bg-indigo-950/60 p-4 rounded-xl border border-indigo-800/50">
+          <p class="text-[11px] font-bold uppercase tracking-wider text-indigo-300">Rata-rata Nominal Transaksi</p>
+          <p id="ana-avg" class="text-xl font-extrabold text-indigo-200 mt-1">Rp 0</p>
+          <p id="ana-sub-avg" class="text-[10px] text-indigo-300 mt-0.5">per transaksi terfilter</p>
+        </div>
+      </div>
+    </section>
+
     <!-- Table -->
     <section class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
       <div class="overflow-x-auto">
@@ -269,7 +329,7 @@
             <tr>
               <th class="px-4 py-3.5 text-center w-10">No</th>
               <th class="px-4 py-3.5">Tanggal</th>
-              <th class="px-4 py-3.5">Nama Transaksi</th>
+              <th class="px-4 py-3.5">Nama Transaksi / RT</th>
               <th class="px-4 py-3.5">Kategori</th>
               <th class="px-4 py-3.5">Keterangan</th>
               <th class="px-4 py-3.5 text-right">Debit</th>
@@ -282,7 +342,7 @@
         </table>
       </div>
       <div id="empty-msg" class="text-center text-slate-400 py-12 text-sm">
-        Belum ada data transaksi di Supabase.
+        Belum ada data transaksi di Supabase / Data terfilter kosong.
       </div>
     </section>
 
@@ -320,7 +380,7 @@
         </div>
 
         <div>
-          <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Nama Transaksi</label>
+          <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Nama Transaksi / RT</label>
           <input id="edit-nama" type="text" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-medium focus:ring-2 focus:ring-amber-500 outline-none" required>
         </div>
 
@@ -334,6 +394,7 @@
               <option value="Perlengkapan & Sewa">Perlengkapan & Sewa</option>
               <option value="Konsumsi">Konsumsi Panitia/Acara</option>
               <option value="Dekorasi & Pubdok">Dekorasi & Pubdok</option>
+              <option value="Keamanan & Kebersihan">Keamanan & Kebersihan</option>
               <option value="Lain-lain">Lain-lain</option>
             </select>
           </div>
@@ -409,7 +470,6 @@
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlyYnFvcnJ2amt3enZvbHRmdGpsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY0MDkwODEsImV4cCI6MjEwMTk4NTA4MX0.WSSz7eeBFORNsyaPrS3KQnASHiC-I6UokiMHfWz9Hc4';
     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    // DEFAULT / FALLBACK PASSWORD
     let currentAdminPassword = '81';
 
     async function fetchAdminPassword() {
@@ -423,10 +483,9 @@
       }
     }
 
-    // INITIALIZE PASSWORD FROM DATABASE
     await fetchAdminPassword();
 
-    // KONTROL GERBANG LOG IN MASUK LINK
+    // LOGIN & AUTH
     const loginOverlay = $('login-overlay');
     const loginForm = $('login-form');
     const loginPass = $('login-pass');
@@ -444,7 +503,7 @@
 
     loginForm.addEventListener('submit', async e => {
       e.preventDefault();
-      await fetchAdminPassword(); // Memastikan password selalu up-to-date saat login
+      await fetchAdminPassword();
 
       if (loginPass.value === currentAdminPassword) {
         sessionStorage.setItem('app_authenticated', 'true');
@@ -519,7 +578,7 @@
     }
 
     function getFiltered() {
-      const q = $('inp-cari').value.toLowerCase();
+      const q = $('inp-cari').value.toLowerCase().trim();
       const jenis = $('filter-jenis').value;
       const kategori = $('filter-kategori').value;
 
@@ -550,7 +609,7 @@
           labels: catLabels.length ? catLabels : ['Belum Ada Pengeluaran'],
           datasets: [{
             data: catValues.length ? catValues : [1],
-            backgroundColor: ['#059669', '#e11d48', '#0284c7', '#d97706', '#8b5cf6', '#64748b']
+            backgroundColor: ['#059669', '#e11d48', '#0284c7', '#d97706', '#8b5cf6', '#64748b', '#0d9488']
           }]
         },
         options: { responsive: true, maintainAspectRatio: false }
@@ -572,6 +631,46 @@
       });
     }
 
+    // HANDLER ANALYTICS KHUSUS FILTER (DINAMIS)
+    function updateFilterAnalytics(filtered, totalInOverall) {
+      const q = $('inp-cari').value.trim();
+      const kat = $('filter-kategori').value;
+      const jns = $('filter-jenis').value;
+
+      let labelFilter = [];
+      if (q) labelFilter.push(`Pencarian: "${q}"`);
+      if (kat) labelFilter.push(`Kategori: ${kat}`);
+      if (jns) labelFilter.push(`Jenis: ${jns.toUpperCase()}`);
+
+      if (labelFilter.length) {
+        $('analytics-title').textContent = `Analisis Unit / Filter: ${labelFilter.join(' | ')}`;
+        $('analytics-badge').textContent = `${filtered.length} Transaksi Ditemukan`;
+      } else {
+        $('analytics-title').textContent = `Analisis Perolehan Kas Keseluruhan`;
+        $('analytics-badge').textContent = `Semua Data (${allData.length})`;
+      }
+
+      const totalInFiltered = filtered.filter(r => r.jenis === 'debit').reduce((s, r) => s + (r.nominal || 0), 0);
+      const totalOutFiltered = filtered.filter(r => r.jenis === 'kredit').reduce((s, r) => s + (r.nominal || 0), 0);
+
+      const isKreditOnly = jns === 'kredit';
+      const mainNominal = isKreditOnly ? totalOutFiltered : totalInFiltered;
+
+      $('ana-nominal').textContent = fmt(mainNominal);
+      $('ana-sub-nominal').textContent = isKreditOnly ? 'Pengeluaran Terfilter' : 'Pemasukan Terfilter';
+
+      // Persentase Kontribusi
+      const shareKas = totalInOverall > 0 ? Math.min(100, ((totalInFiltered / totalInOverall) * 100)).toFixed(1) : 0;
+      $('ana-share-kas').textContent = shareKas + '%';
+
+      const shareTarget = targetBudget > 0 ? Math.min(100, ((totalInFiltered / targetBudget) * 100)).toFixed(1) : 0;
+      $('ana-share-target').textContent = shareTarget + '%';
+
+      // Rata-rata nominal per transaksi
+      const avgNominal = filtered.length > 0 ? Math.round(mainNominal / filtered.length) : 0;
+      $('ana-avg').textContent = fmt(avgNominal);
+    }
+
     function render() {
       const filtered = getFiltered();
       const totalIn = allData.filter(r=>r.jenis==='debit').reduce((s,r)=>s+(r.nominal||0),0);
@@ -590,6 +689,7 @@
       $('target-percent-text').textContent = percent + '% TERCAPAI';
 
       updateCharts(totalIn, totalOut);
+      updateFilterAnalytics(filtered, totalIn);
 
       const tbody = $('tx-body');
       const emptyMsg = $('empty-msg');
@@ -779,7 +879,7 @@
           <hr>
           <p><strong>ID Transaksi:</strong> ${item.id}</p>
           <p><strong>Tanggal:</strong> ${item.tanggal}</p>
-          <p><strong>Nama Transaksi:</strong> ${item.nama}</p>
+          <p><strong>Nama Transaksi / RT:</strong> ${item.nama}</p>
           <p><strong>Kategori:</strong> ${item.kategori}</p>
           <p><strong>Keterangan:</strong> ${item.keterangan || '-'}</p>
           <div class="amount">${item.jenis === 'debit' ? '[MASUK] ' : '[KELUAR] '} ${fmt(item.nominal)}</div>
@@ -960,59 +1060,133 @@
       loadDataFromSupabase();
     });
 
-    // Share to WA
+    // Share to WA (Hasil Filter Terkini)
     $('btn-wa').addEventListener('click', () => {
-      const totalIn = allData.filter(r=>r.jenis==='debit').reduce((s,r)=>s+(r.nominal||0),0);
-      const totalOut = allData.filter(r=>r.jenis==='kredit').reduce((s,r)=>s+(r.nominal||0),0);
-      const text = `*LAPORAN KEUANGAN HUT RI KE-81 RW.01*%0A` +
+      const filtered = getFiltered();
+      const q = $('inp-cari').value.trim();
+      const kat = $('filter-kategori').value;
+      const jns = $('filter-jenis').value;
+
+      let filterInfo = [];
+      if (q) filterInfo.push(`Cari: "${q}"`);
+      if (kat) filterInfo.push(`Kategori: ${kat}`);
+      if (jns) filterInfo.push(`Jenis: ${jns.toUpperCase()}`);
+
+      const titleSub = filterInfo.length ? `\n(Filter: ${filterInfo.join(' | ')})` : '';
+
+      const totalIn = filtered.filter(r=>r.jenis==='debit').reduce((s,r)=>s+(r.nominal||0),0);
+      const totalOut = filtered.filter(r=>r.jenis==='kredit').reduce((s,r)=>s+(r.nominal||0),0);
+      
+      const text = `*LAPORAN KEUANGAN HUT RI KE-81 RW.01* ${titleSub}%0A` +
         `----------------------------------------%0A` +
         `Total Pemasukan : ${fmt(totalIn)}%0A` +
         `Total Pengeluaran : ${fmt(totalOut)}%0A` +
-        `*Saldo Akhir Kas : ${fmt(totalIn - totalOut)}*%0A` +
-        `Total Transaksi : ${allData.length} Transaksi%0A` +
+        `*Saldo Akhir / Sisa : ${fmt(totalIn - totalOut)}*%0A` +
+        `Total Transaksi : ${filtered.length} Transaksi%0A` +
         `----------------------------------------%0A` +
         `_Laporan Diperbarui Otomatis oleh Panitia RW.01_`;
       window.open(`https://wa.me/?text=${text}`, '_blank');
     });
 
-    // PDF Export
+    // PDF Export (Lengkap dengan Filter Header & Analytics Total)
     $('btn-pdf').addEventListener('click', () => {
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF('landscape');
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(15);
-      doc.text('LAPORAN KEUANGAN HUT RI KE-81 RW.01', 14, 18);
-
+      
       const filtered = getFiltered();
+      const q = $('inp-cari').value.trim();
+      const kat = $('filter-kategori').value;
+      const jns = $('filter-jenis').value;
+
+      let filterText = 'Semua Transaksi';
+      let details = [];
+      if (q) details.push(`Unit/Nama: "${q}"`);
+      if (kat) details.push(`Kategori: ${kat}`);
+      if (jns) details.push(`Jenis: ${jns.toUpperCase()}`);
+      if (details.length) filterText = details.join(' | ');
+
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(14);
+      doc.text('LAPORAN KEUANGAN HUT RI KE-81 RW.01', 14, 15);
+      
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(10);
+      doc.text(`Filter Unit/Evaluasi: ${filterText}`, 14, 21);
+
       let saldo = 0;
+      let totalDebit = 0;
+      let totalKredit = 0;
+
       const body = filtered.map((r, i) => {
-        saldo += r.jenis === 'debit' ? (r.nominal||0) : -(r.nominal||0);
-        return [i + 1, r.tanggal, r.nama, r.kategori, r.keterangan, r.jenis === 'debit' ? fmt(r.nominal) : '-', r.jenis === 'kredit' ? fmt(r.nominal) : '-', fmt(saldo)];
+        const nominal = r.nominal || 0;
+        if (r.jenis === 'debit') {
+          saldo += nominal;
+          totalDebit += nominal;
+        } else {
+          saldo -= nominal;
+          totalKredit += nominal;
+        }
+        return [
+          i + 1, 
+          r.tanggal || '-', 
+          r.nama || '-', 
+          r.kategori || 'Umum', 
+          r.keterangan || '-', 
+          r.jenis === 'debit' ? fmt(nominal) : '-', 
+          r.jenis === 'kredit' ? fmt(nominal) : '-', 
+          fmt(saldo)
+        ];
       });
+
+      // Tambahkan Baris Total Akumulasi di Paling Bawah PDF
+      body.push([
+        { content: 'TOTAL AKUMULASI DARI FILTER DI ATAS', colSpan: 5, styles: { fontStyle: 'bold', halign: 'right' } },
+        { content: fmt(totalDebit), styles: { fontStyle: 'bold', textColor: [5, 150, 105] } },
+        { content: fmt(totalKredit), styles: { fontStyle: 'bold', textColor: [225, 29, 72] } },
+        { content: fmt(totalDebit - totalKredit), styles: { fontStyle: 'bold' } }
+      ]);
 
       doc.autoTable({
-        head: [['No', 'Tanggal', 'Nama Transaksi', 'Kategori', 'Keterangan', 'Debit', 'Kredit', 'Saldo']],
+        head: [['No', 'Tanggal', 'Nama Transaksi / RT', 'Kategori', 'Keterangan', 'Debit', 'Kredit', 'Saldo']],
         body: body,
-        startY: 25,
-        headStyles: { fillColor: [15, 23, 42] }
+        startY: 26,
+        headStyles: { fillColor: [15, 23, 42] },
+        styles: { fontSize: 8 }
       });
 
-      doc.save('laporan-keuangan-hut-ri-81.pdf');
+      const filename = q ? `Laporan_Evaluasi_${q.replace(/\s+/g, '_')}.pdf` : 'Laporan_Keuangan_Filtered.pdf';
+      doc.save(filename);
     });
 
-    // Excel Export
+    // Excel Export (Sesuai Filter yang Dipilih)
     $('btn-excel').addEventListener('click', () => {
       const filtered = getFiltered();
+      const q = $('inp-cari').value.trim();
+
       let saldo = 0;
       const data = filtered.map((r, i) => {
-        saldo += r.jenis === 'debit' ? (r.nominal||0) : -(r.nominal||0);
-        return { No: i + 1, Tanggal: r.tanggal, Nama: r.nama, Kategori: r.kategori, Keterangan: r.keterangan, Debit: r.jenis === 'debit' ? r.nominal : 0, Kredit: r.jenis === 'kredit' ? r.nominal : 0, Saldo: saldo };
+        const nominal = r.nominal || 0;
+        if (r.jenis === 'debit') saldo += nominal;
+        else saldo -= nominal;
+
+        return {
+          'No': i + 1,
+          'Tanggal': r.tanggal,
+          'Nama Transaksi / RT': r.nama,
+          'Kategori': r.kategori,
+          'Keterangan': r.keterangan,
+          'Debit (Masuk)': r.jenis === 'debit' ? nominal : 0,
+          'Kredit (Keluar)': r.jenis === 'kredit' ? nominal : 0,
+          'Saldo Kumulatif': saldo
+        };
       });
 
       const ws = XLSX.utils.json_to_sheet(data);
       const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, 'Transaksi');
-      XLSX.writeFile(wb, 'laporan-keuangan-hut-ri-81.xlsx');
+      XLSX.utils.book_append_sheet(wb, ws, 'Hasil Filter');
+
+      const filename = q ? `Laporan_${q.replace(/\s+/g, '_')}.xlsx` : 'Laporan_Keuangan_Filtered.xlsx';
+      XLSX.writeFile(wb, filename);
     });
 
     // Registrasi Service Worker PWA
