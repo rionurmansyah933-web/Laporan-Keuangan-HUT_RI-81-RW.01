@@ -82,6 +82,9 @@
         <button type="button" onclick="window.print()" class="btn-action px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 flex items-center gap-2 shadow-sm">
           <i data-lucide="printer" class="w-4 h-4 text-amber-400"></i> Cetak
         </button>
+        <button type="button" id="btn-change-pass" class="btn-action px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-800 hover:bg-slate-700 text-amber-300 border border-slate-700 flex items-center gap-2 shadow-sm">
+          <i data-lucide="key" class="w-4 h-4 text-amber-400"></i> Ganti Password
+        </button>
         <button type="button" id="btn-logout" class="btn-action px-3.5 py-2 rounded-xl text-xs font-bold bg-rose-600/20 hover:bg-rose-600/30 text-rose-300 border border-rose-500/30 flex items-center gap-2 shadow-sm ml-2">
           <i data-lucide="log-out" class="w-4 h-4"></i> Keluar
         </button>
@@ -355,12 +358,73 @@
     </div>
   </div>
 
+  <!-- MODAL GANTI PASSWORD -->
+  <div id="modal-pass" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4 no-print">
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-2xl w-full max-w-md p-6 space-y-5">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <div class="flex items-center gap-2">
+          <div class="p-2 bg-amber-50 text-amber-600 rounded-lg">
+            <i data-lucide="key" class="w-5 h-5"></i>
+          </div>
+          <h3 class="text-base font-bold text-slate-900">Pengaturan Password</h3>
+        </div>
+        <button type="button" id="btn-close-pass" class="text-slate-400 hover:text-slate-600 p-1">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form id="pass-form" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Password Lama</label>
+          <input id="pass-old" type="password" placeholder="Masukkan password lama..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-medium focus:ring-2 focus:ring-amber-500 outline-none" required>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Password Baru</label>
+          <input id="pass-new" type="password" placeholder="Masukkan password baru..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-medium focus:ring-2 focus:ring-amber-500 outline-none" required>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Konfirmasi Password Baru</label>
+          <input id="pass-confirm" type="password" placeholder="Ulangi password baru..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-medium focus:ring-2 focus:ring-amber-500 outline-none" required>
+        </div>
+
+        <p id="pass-msg-err" class="text-xs text-rose-600 font-bold hidden"></p>
+
+        <div class="flex justify-end gap-2 pt-2 border-t border-slate-100">
+          <button type="button" id="btn-cancel-pass" class="px-4 py-2 bg-slate-100 text-slate-600 rounded-xl text-xs font-bold hover:bg-slate-200">Batal</button>
+          <button type="submit" id="btn-save-pass" class="px-5 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-bold shadow-sm flex items-center gap-1.5">
+            <i data-lucide="save" class="w-4 h-4"></i> Simpan Password Baru
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <script>
   (async () => {
-    // ADMIN PASSWORD
-    const ADMIN_PASSWORD = '81'; 
-
     const $ = id => document.getElementById(id);
+
+    const SUPABASE_URL = 'https://irbqorrvjkwzvoltftjl.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlyYnFvcnJ2amt3enZvbHRmdGpsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY0MDkwODEsImV4cCI6MjEwMTk4NTA4MX0.WSSz7eeBFORNsyaPrS3KQnASHiC-I6UokiMHfWz9Hc4';
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    // DEFAULT / FALLBACK PASSWORD
+    let currentAdminPassword = '81';
+
+    async function fetchAdminPassword() {
+      try {
+        const { data, error } = await supabase.from('settings').select('value').eq('key', 'admin_password').single();
+        if (!error && data && data.value) {
+          currentAdminPassword = data.value;
+        }
+      } catch(e) {
+        console.log('Using fallback password:', currentAdminPassword);
+      }
+    }
+
+    // INITIALIZE PASSWORD FROM DATABASE
+    await fetchAdminPassword();
 
     // KONTROL GERBANG LOG IN MASUK LINK
     const loginOverlay = $('login-overlay');
@@ -378,9 +442,11 @@
       }
     }
 
-    loginForm.addEventListener('submit', e => {
+    loginForm.addEventListener('submit', async e => {
       e.preventDefault();
-      if (loginPass.value === ADMIN_PASSWORD) {
+      await fetchAdminPassword(); // Memastikan password selalu up-to-date saat login
+
+      if (loginPass.value === currentAdminPassword) {
         sessionStorage.setItem('app_authenticated', 'true');
         loginErr.classList.add('hidden');
         loginPass.value = '';
@@ -402,17 +468,13 @@
 
     function verifyPassword() {
       const pass = prompt('Masukkan Password Panitia / Admin untuk melanjutkan aksi:');
-      if (pass === ADMIN_PASSWORD) {
+      if (pass === currentAdminPassword) {
         return true;
       } else {
         alert('Password Salah! Akses Ditolak.');
         return false;
       }
     }
-
-    const SUPABASE_URL = 'https://irbqorrvjkwzvoltftjl.supabase.co';
-    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlyYnFvcnJ2amt3enZvbHRmdGpsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY0MDkwODEsImV4cCI6MjEwMTk4NTA4MX0.WSSz7eeBFORNsyaPrS3KQnASHiC-I6UokiMHfWz9Hc4';
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
     let allData = [];
     let targetBudget = 15000000;
@@ -422,6 +484,8 @@
     const fmt = n => 'Rp ' + Number(n||0).toLocaleString('id-ID');
 
     async function loadDataFromSupabase() {
+      await fetchAdminPassword();
+
       const { data: transactions, error: err1 } = await supabase.from('transactions').select('*').order('tanggal', { ascending: true });
       if (err1) console.error('Error fetching transactions:', err1);
       else allData = transactions || [];
@@ -624,6 +688,71 @@
       } else {
         closeEditModal();
         loadDataFromSupabase();
+      }
+    });
+
+    // HANDLER GANTI PASSWORD
+    const modalPass = $('modal-pass');
+    const btnChangePass = $('btn-change-pass');
+    const btnClosePass = $('btn-close-pass');
+    const btnCancelPass = $('btn-cancel-pass');
+    const passForm = $('pass-form');
+    const passMsgErr = $('pass-msg-err');
+
+    function openPassModal() {
+      $('pass-old').value = '';
+      $('pass-new').value = '';
+      $('pass-confirm').value = '';
+      passMsgErr.classList.add('hidden');
+      modalPass.classList.remove('hidden');
+    }
+
+    function closePassModal() {
+      modalPass.classList.add('hidden');
+    }
+
+    btnChangePass.addEventListener('click', openPassModal);
+    btnClosePass.addEventListener('click', closePassModal);
+    btnCancelPass.addEventListener('click', closePassModal);
+
+    passForm.addEventListener('submit', async e => {
+      e.preventDefault();
+
+      const oldP = $('pass-old').value;
+      const newP = $('pass-new').value;
+      const confirmP = $('pass-confirm').value;
+
+      if (oldP !== currentAdminPassword) {
+        passMsgErr.textContent = 'Password lama tidak sesuai!';
+        passMsgErr.classList.remove('hidden');
+        return;
+      }
+
+      if (newP !== confirmP) {
+        passMsgErr.textContent = 'Konfirmasi password baru tidak cocok!';
+        passMsgErr.classList.remove('hidden');
+        return;
+      }
+
+      if (newP.trim().length < 3) {
+        passMsgErr.textContent = 'Password minimal 3 karakter!';
+        passMsgErr.classList.remove('hidden');
+        return;
+      }
+
+      const btnSave = $('btn-save-pass');
+      btnSave.disabled = true;
+
+      const { error } = await supabase.from('settings').upsert({ key: 'admin_password', value: newP });
+      btnSave.disabled = false;
+
+      if (error) {
+        passMsgErr.textContent = 'Gagal memperbarui password di database: ' + error.message;
+        passMsgErr.classList.remove('hidden');
+      } else {
+        currentAdminPassword = newP;
+        alert('Password berhasil diperbarui!');
+        closePassModal();
       }
     });
 
