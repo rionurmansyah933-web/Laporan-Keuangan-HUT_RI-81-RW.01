@@ -5,6 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Laporan Keuangan HUT RI ke-81 - RW.01</title>
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class'
+    }
+  </script>
   <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
@@ -13,7 +18,6 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-  <!-- Config PWA Meta Tags -->
   <link rel="manifest" href="./manifest.json">
   <meta name="theme-color" content="#0f172a">
   <link rel="apple-touch-icon" href="https://irbqorrvjkwzvoltftjl.supabase.co/storage/v1/object/public/assets/logo-rw01.jpg">
@@ -26,8 +30,6 @@
       .no-print { display: none !important; }
       body { background: white; color: black; }
     }
-
-    /* Style Logo Login */
     .logo-wrapper {
       width: 150px;
       height: 150px;
@@ -39,53 +41,49 @@
       border-radius: 20px;
       overflow: hidden;
     }
-    .app-logo {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
+    .app-logo { width: 100%; height: 100%; object-fit: cover; }
   </style>
 </head>
-<body class="min-h-screen bg-slate-50 text-slate-800 antialiased">
+<body class="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 antialiased transition-colors duration-200">
 
-  <!-- GERBANG AKSES MASUK (LOGIN OVERLAY) -->
+  <!-- LOGIN OVERLAY -->
   <div id="login-overlay" class="fixed inset-0 z-50 bg-slate-900 flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl p-8 max-w-md w-full shadow-2xl text-center space-y-6 no-print">
-      
-      <!-- Container Logo -->
-      <div class="logo-wrapper">
+    <div class="bg-white dark:bg-slate-900 rounded-2xl p-8 max-w-md w-full shadow-2xl text-center space-y-6 no-print border dark:border-slate-800">
+      <div class="logo-wrapper dark:bg-slate-800">
         <img src="https://i.imgur.com/2AhJXOW.jpg" alt="Logo RW.01" class="app-logo">
       </div>
-
       <div>
-        <span class="bg-emerald-500/10 text-emerald-600 border border-emerald-500/20 text-xs font-bold px-2.5 py-1 rounded-full">HUT RI-81 RW.01 Tahun 2026</span>
-        <h2 class="text-xl font-extrabold text-slate-900 mt-3">Akses Terkunci</h2>
-        <p class="text-xs text-slate-500 mt-1">Masukkan Password Panitia untuk membuka Laporan Keuangan HUT RI ke-81</p>
+        <span class="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 text-xs font-bold px-2.5 py-1 rounded-full">HUT RI-81 RW.01 Tahun 2026</span>
+        <h2 class="text-xl font-extrabold text-slate-900 dark:text-white mt-3">Akses Terkunci</h2>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Masukkan Password Panitia untuk membuka Laporan Keuangan</p>
       </div>
 
       <form id="login-form" class="space-y-4">
         <div>
-          <input id="login-pass" type="password" placeholder="Masukkan Password..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-center font-bold focus:bg-white focus:ring-2 focus:ring-emerald-500 outline-none transition-all" required>
+          <input id="login-pass" type="password" placeholder="Masukkan Password..." class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm text-center font-bold focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-emerald-500 outline-none transition-all dark:text-white" required>
           <p id="login-err" class="text-xs text-rose-600 font-bold mt-2 hidden">Password Salah! Silakan coba lagi.</p>
         </div>
-        <button type="submit" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3 rounded-xl text-sm transition-all shadow-md flex items-center justify-center gap-2">
+        <button type="submit" class="w-full bg-slate-900 dark:bg-emerald-600 hover:bg-slate-800 dark:hover:bg-emerald-500 text-white font-bold py-3 rounded-xl text-sm transition-all shadow-md flex items-center justify-center gap-2">
           <i data-lucide="key-round" class="w-4 h-4"></i> Masuk Ke Aplikasi
         </button>
       </form>
     </div>
   </div>
 
-  <!-- Header -->
+  <!-- HEADER -->
   <header class="w-full bg-slate-900 text-white border-b border-slate-800 sticky top-0 z-30 shadow-lg no-print">
     <div class="max-w-7xl mx-auto px-6 py-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
       <div>
         <div class="flex items-center gap-2">
           <span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs font-semibold px-2 py-0.5 rounded-full">RW.01 Tahun 2026</span>
-          <span class="text-slate-400 text-xs">• @sekretariatrw@gmail.com - Sistem Keuangan Terpadu V.2</span>
+          <span class="text-slate-400 text-xs">• Sistem Keuangan Terpadu V.2</span>
         </div>
         <h1 class="text-2xl font-extrabold tracking-tight mt-1 text-white">Laporan Keuangan HUT RI ke-81</h1>
       </div>
       <div class="flex flex-wrap items-center gap-2">
+        <button type="button" id="btn-toggle-dark" class="btn-action px-3 py-2 rounded-xl text-xs font-bold bg-slate-800 hover:bg-slate-700 text-amber-300 border border-slate-700 flex items-center gap-1.5 shadow-sm" title="Toggle Dark/Light Mode">
+          <i data-lucide="moon" class="w-4 h-4"></i> Mode
+        </button>
         <button type="button" id="btn-import" class="btn-action px-3.5 py-2 rounded-xl text-xs font-bold bg-indigo-600 hover:bg-indigo-500 text-white flex items-center gap-2 shadow-sm">
           <i data-lucide="upload" class="w-4 h-4"></i> Import Excel
         </button>
@@ -104,9 +102,9 @@
           <i data-lucide="printer" class="w-4 h-4 text-amber-400"></i> Cetak
         </button>
         <button type="button" id="btn-change-pass" class="btn-action px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-800 hover:bg-slate-700 text-amber-300 border border-slate-700 flex items-center gap-2 shadow-sm">
-          <i data-lucide="key" class="w-4 h-4 text-amber-400"></i> Ganti Password
+          <i data-lucide="key" class="w-4 h-4 text-amber-400"></i> Pass / Setting Kunci
         </button>
-        <button type="button" id="btn-logout" class="btn-action px-3.5 py-2 rounded-xl text-xs font-bold bg-rose-600/20 hover:bg-rose-600/30 text-rose-300 border border-rose-500/30 flex items-center gap-2 shadow-sm ml-2">
+        <button type="button" id="btn-logout" class="btn-action px-3.5 py-2 rounded-xl text-xs font-bold bg-rose-600/20 hover:bg-rose-600/30 text-rose-300 border border-rose-500/30 flex items-center gap-2 shadow-sm ml-1">
           <i data-lucide="log-out" class="w-4 h-4"></i> Keluar
         </button>
       </div>
@@ -115,70 +113,75 @@
 
   <main class="max-w-7xl mx-auto px-6 py-8 space-y-8">
 
-    <!-- Stats Cards Overall -->
+    <!-- STATS CARDS OVERALL -->
     <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-      <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm relative overflow-hidden">
+      <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm relative overflow-hidden">
         <div class="absolute top-0 right-0 w-2 h-full bg-emerald-500"></div>
         <p class="text-xs font-bold uppercase tracking-wider text-slate-400">Total Pemasukan Kas</p>
-        <p id="val-pemasukan" class="text-2xl font-extrabold text-emerald-600 mt-2">Rp 0</p>
+        <p id="val-pemasukan" class="text-2xl font-extrabold text-emerald-600 dark:text-emerald-400 mt-2">Rp 0</p>
       </div>
-      <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm relative overflow-hidden">
+      <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm relative overflow-hidden">
         <div class="absolute top-0 right-0 w-2 h-full bg-rose-500"></div>
         <p class="text-xs font-bold uppercase tracking-wider text-slate-400">Total Pengeluaran Kas</p>
-        <p id="val-pengeluaran" class="text-2xl font-extrabold text-rose-600 mt-2">Rp 0</p>
+        <p id="val-pengeluaran" class="text-2xl font-extrabold text-rose-600 dark:text-rose-400 mt-2">Rp 0</p>
       </div>
-      <div class="bg-slate-900 text-white p-5 rounded-2xl shadow-md relative overflow-hidden">
+      <div class="bg-slate-900 dark:bg-slate-800 text-white p-5 rounded-2xl shadow-md relative overflow-hidden border dark:border-slate-700">
         <p class="text-xs font-bold uppercase tracking-wider text-slate-400">Saldo Akhir Kas</p>
         <p id="val-saldo" class="text-2xl font-extrabold text-white mt-2">Rp 0</p>
       </div>
-      <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm relative overflow-hidden">
+      <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm relative overflow-hidden">
         <div class="absolute top-0 right-0 w-2 h-full bg-indigo-500"></div>
         <p class="text-xs font-bold uppercase tracking-wider text-slate-400">Total Transaksi</p>
-        <p id="val-jumlah" class="text-2xl font-extrabold text-slate-800 mt-2">0 Transaksi</p>
+        <p id="val-jumlah" class="text-2xl font-extrabold text-slate-800 dark:text-slate-100 mt-2">0 Transaksi</p>
       </div>
     </section>
 
-    <!-- Target Budget Input & Progress Tracker -->
-    <section class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm space-y-4">
+    <!-- BREAKDOWN REKAPITULASI RT -->
+    <section class="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
+      <h3 class="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
+        <i data-lucide="users" class="w-4 h-4 text-indigo-600 dark:text-indigo-400"></i> Rekapitulasi Pemasukan Per RT
+      </h3>
+      <div id="rt-breakdown-container" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3"></div>
+    </section>
+
+    <!-- TARGET BUDGET -->
+    <section class="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
       <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div class="space-y-1">
-          <h3 class="text-sm font-bold text-slate-900">Target Realisasi Pemasukan RW.01</h3>
-          <p class="text-xs text-slate-500">Target anggaran tersimpan di cloud database Supabase</p>
+          <h3 class="text-sm font-bold text-slate-900 dark:text-white">Target Realisasi Pemasukan RW.01</h3>
+          <p class="text-xs text-slate-500 dark:text-slate-400">Target anggaran tersimpan di database cloud</p>
         </div>
-
         <div class="flex items-center gap-2 no-print">
           <div class="relative">
             <span class="absolute left-3 top-2.5 text-xs font-bold text-slate-400">Rp</span>
-            <input id="inp-target-manual" type="text" placeholder="55000000" class="bg-slate-50 border border-slate-200 rounded-xl pl-9 pr-3 py-2 text-sm font-semibold text-slate-800 focus:bg-white focus:ring-2 focus:ring-emerald-500 outline-none w-48">
+            <input id="inp-target-manual" type="text" placeholder="55000000" class="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl pl-9 pr-3 py-2 text-sm font-semibold text-slate-800 dark:text-white focus:ring-2 focus:ring-emerald-500 outline-none w-48">
           </div>
-          <button type="button" id="btn-save-target" class="bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition-all">
+          <button type="button" id="btn-save-target" class="bg-slate-900 dark:bg-emerald-600 hover:bg-slate-800 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition-all">
             Simpan Target
           </button>
         </div>
       </div>
-
-      <div class="flex items-center justify-between text-xs font-semibold text-slate-600 pt-2 border-t border-slate-100">
-        <span>Ketercapaian: <strong id="lbl-target-val" class="text-slate-800">Rp 0 / Rp 0</strong></span>
-        <span id="target-percent-text" class="text-xs font-extrabold text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">0% TERCAPAI</span>
+      <div class="flex items-center justify-between text-xs font-semibold text-slate-600 dark:text-slate-400 pt-2 border-t border-slate-100 dark:border-slate-800">
+        <span>Ketercapaian: <strong id="lbl-target-val" class="text-slate-800 dark:text-white">Rp 0 / Rp 0</strong></span>
+        <span id="target-percent-text" class="text-xs font-extrabold text-emerald-600 bg-emerald-50 dark:bg-emerald-950/50 px-3 py-1 rounded-full border border-emerald-200 dark:border-emerald-800">0% TERCAPAI</span>
       </div>
-
-      <div class="w-full bg-slate-100 h-3 rounded-full overflow-hidden">
+      <div class="w-full bg-slate-100 dark:bg-slate-800 h-3 rounded-full overflow-hidden">
         <div id="target-progress-bar" class="bg-emerald-500 h-full transition-all duration-500" style="width: 0%"></div>
       </div>
     </section>
 
-    <!-- Analytics Charts Section -->
+    <!-- ANALYTICS CHARTS -->
     <section class="grid grid-cols-1 lg:grid-cols-2 gap-6 no-print">
-      <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm">
-        <h3 class="text-sm font-bold text-slate-900 mb-4 flex items-center gap-2">
+      <div class="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200/80 dark:border-slate-800 shadow-sm">
+        <h3 class="text-sm font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
           <i data-lucide="pie-chart" class="w-4 h-4 text-emerald-600"></i> Distribusi Pengeluaran Per Kategori
         </h3>
         <div class="h-64 flex justify-center">
           <canvas id="categoryChart"></canvas>
         </div>
       </div>
-      <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm">
-        <h3 class="text-sm font-bold text-slate-900 mb-4 flex items-center gap-2">
+      <div class="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200/80 dark:border-slate-800 shadow-sm">
+        <h3 class="text-sm font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
           <i data-lucide="bar-chart-3" class="w-4 h-4 text-sky-600"></i> Perbandingan Cashflow
         </h3>
         <div class="h-64 flex justify-center">
@@ -187,30 +190,49 @@
       </div>
     </section>
 
-    <!-- Form Input Section -->
-    <section class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm no-print">
-      <div class="flex items-center gap-2 mb-6 border-b border-slate-100 pb-4">
-        <div class="p-2 bg-emerald-50 text-emerald-600 rounded-lg">
+    <!-- FORM INPUT -->
+    <section class="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200/80 dark:border-slate-800 shadow-sm no-print">
+      <div class="flex items-center gap-2 mb-6 border-b border-slate-100 dark:border-slate-800 pb-4">
+        <div class="p-2 bg-emerald-50 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 rounded-lg">
           <i data-lucide="plus-circle" class="w-5 h-5"></i>
         </div>
         <div>
-          <h2 class="text-lg font-bold text-slate-900">Tambah Transaksi Baru</h2>
-          <p class="text-xs text-slate-500">Memerlukan Password Panitia untuk menyimpan data</p>
+          <h2 class="text-lg font-bold text-slate-900 dark:text-white">Tambah Transaksi Baru</h2>
+          <p class="text-xs text-slate-500 dark:text-slate-400">Sistem memproteksi penginputan data dengan Password jika Kunci Aktif</p>
         </div>
       </div>
 
       <form id="tx-form" class="grid grid-cols-1 md:grid-cols-3 gap-5">
         <div>
-          <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">Tanggal</label>
-          <input id="inp-tanggal" type="date" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm font-medium focus:bg-white focus:ring-2 focus:ring-emerald-500 outline-none transition-all" required>
+          <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">Tanggal</label>
+          <input id="inp-tanggal" type="date" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-white rounded-xl px-3.5 py-2.5 text-sm font-medium focus:ring-2 focus:ring-emerald-500 outline-none transition-all" required>
         </div>
         <div>
-          <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">Nama Transaksi / Wilayah RT</label>
-          <input id="inp-nama" type="text" placeholder="Contoh: Iuran RT 01 / Sewa Tenda" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm font-medium focus:bg-white focus:ring-2 focus:ring-emerald-500 outline-none transition-all" required>
+          <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">Nama Transaksi / RT</label>
+          <select id="inp-rt-select" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-white rounded-xl px-3.5 py-2.5 text-sm font-medium focus:ring-2 focus:ring-emerald-500 outline-none transition-all" required>
+            <option value="">-- Pilih Wilayah RT / Manual --</option>
+            <option value="RT.001">RT.001_Nona Sarifah</option>
+            <option value="RT.002">RT.002_Silvie</option>
+            <option value="RT.003">RT.003_Wanda</option>
+            <option value="RT.004">RT.004_Desi Pasha</option>
+            <option value="RT.006">RT.006_Wahyu Sanjaya</option>
+            <option value="RT.007">RT.007_Andi Matin</option>
+            <option value="RT.008">RT.008_Fachrul</option>
+            <option value="RT.009">RT.009_Trimaryono</option>
+            <option value="RT.010">RT.010_Rachmat</option>
+            <option value="RT.011">RT.011_M.Idrus</option>
+            <option value="RT.012">RT.012_Dedi Supriyatna</option>
+            <option value="RT.013">RT.013_Saepudin</option>
+            <option value="RT.014">RT.014_Aris Sujangah</option>
+            <option value="RT.015">RT.015_Nandang Komarudin</option>
+            <option value="RT.06">RT.016_Allan</option>
+            <option value="MANUAL">-- Ketik Manual... --</option>
+          </select>
+          <input id="inp-nama" type="text" placeholder="Masukkan Nama Transaksi..." class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-white rounded-xl px-3.5 py-2.5 text-sm font-medium focus:ring-2 focus:ring-emerald-500 outline-none transition-all mt-2 hidden">
         </div>
         <div>
-          <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">Kategori Transaksi</label>
-          <select id="inp-kategori" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm font-medium focus:bg-white focus:ring-2 focus:ring-emerald-500 outline-none transition-all" required>
+          <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">Kategori Transaksi</label>
+          <select id="inp-kategori" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-white rounded-xl px-3.5 py-2.5 text-sm font-medium focus:ring-2 focus:ring-emerald-500 outline-none transition-all" required>
             <option value="LIST">List Warga</option>
             <option value="Sponsorship">Sponsorship / Donasi</option>
             <option value="Hadiah & Lomba">Hadiah & Lomba</option>
@@ -222,19 +244,19 @@
           </select>
         </div>
         <div>
-          <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">Jenis Transaksi</label>
-          <select id="inp-jenis" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm font-medium focus:bg-white focus:ring-2 focus:ring-emerald-500 outline-none transition-all" required>
+          <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">Jenis Transaksi</label>
+          <select id="inp-jenis" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-white rounded-xl px-3.5 py-2.5 text-sm font-medium focus:ring-2 focus:ring-emerald-500 outline-none transition-all" required>
             <option value="debit">Debit (Uang Masuk / Pemasukan)</option>
             <option value="kredit">Kredit (Uang Keluar / Pengeluaran)</option>
           </select>
         </div>
         <div>
-          <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">Nominal (Rp)</label>
-          <input id="inp-nominal" type="number" min="0" placeholder="0" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm font-medium focus:bg-white focus:ring-2 focus:ring-emerald-500 outline-none transition-all" required>
+          <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">Nominal (Rp)</label>
+          <input id="inp-nominal" type="number" min="0" placeholder="0" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-white rounded-xl px-3.5 py-2.5 text-sm font-medium focus:ring-2 focus:ring-emerald-500 outline-none transition-all" required>
         </div>
         <div>
-          <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">Keterangan Tambahan</label>
-          <input id="inp-ket" type="text" placeholder="Detail catatan singkat" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm font-medium focus:bg-white focus:ring-2 focus:ring-emerald-500 outline-none transition-all">
+          <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">Keterangan Tambahan</label>
+          <input id="inp-ket" type="text" placeholder="Detail catatan singkat" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-white rounded-xl px-3.5 py-2.5 text-sm font-medium focus:ring-2 focus:ring-emerald-500 outline-none transition-all">
         </div>
         <div class="md:col-span-3 flex justify-end pt-2">
           <button type="submit" id="btn-submit" class="btn-action bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2 shadow-sm">
@@ -244,19 +266,25 @@
       </form>
     </section>
 
-    <!-- Filters Section -->
+    <!-- FILTERS SECTION (TERMASUK RENTANG TANGGAL) -->
     <section class="space-y-4 no-print">
       <div class="flex flex-wrap items-center justify-between gap-4">
         <div class="flex flex-wrap items-center gap-3 flex-1">
-          <div class="min-w-[220px] flex-1">
-            <input id="inp-cari" type="text" placeholder="Cari RT 01, RT 02, atau keterangan..." class="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2 text-sm focus:ring-2 focus:ring-slate-400 outline-none shadow-sm">
+          <div class="min-w-[200px] flex-1">
+            <input id="inp-cari" type="text" placeholder="Cari RT.001, RT.002, atau keterangan..." class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-white rounded-xl px-3.5 py-2 text-sm focus:ring-2 focus:ring-slate-400 outline-none shadow-sm">
           </div>
-          <select id="filter-jenis" class="bg-white border border-slate-200 rounded-xl px-3.5 py-2 text-sm focus:ring-2 focus:ring-slate-400 outline-none shadow-sm font-medium text-slate-600">
+          <!-- Filter Rentang Tanggal -->
+          <div class="flex items-center gap-1.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-1 rounded-xl shadow-sm">
+            <input id="filter-start-date" type="date" title="Tanggal Mulai" class="bg-transparent text-xs text-slate-600 dark:text-slate-300 outline-none px-2 py-1">
+            <span class="text-xs text-slate-400 font-bold">s/d</span>
+            <input id="filter-end-date" type="date" title="Tanggal Akhir" class="bg-transparent text-xs text-slate-600 dark:text-slate-300 outline-none px-2 py-1">
+          </div>
+          <select id="filter-jenis" class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 rounded-xl px-3.5 py-2 text-sm outline-none shadow-sm font-medium">
             <option value="">Semua Tipe</option>
             <option value="debit">Debit (Masuk)</option>
             <option value="kredit">Kredit (Keluar)</option>
           </select>
-          <select id="filter-kategori" class="bg-white border border-slate-200 rounded-xl px-3.5 py-2 text-sm focus:ring-2 focus:ring-slate-400 outline-none shadow-sm font-medium text-slate-600">
+          <select id="filter-kategori" class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 rounded-xl px-3.5 py-2 text-sm outline-none shadow-sm font-medium">
             <option value="">Semua Kategori</option>
             <option value="LIST">List Warga</option>
             <option value="Sponsorship">Sponsorship</option>
@@ -268,52 +296,47 @@
             <option value="Lain-lain">Lain-lain</option>
           </select>
         </div>
-
-        <button type="button" id="btn-reset" class="px-4 py-2 rounded-xl text-xs font-bold text-rose-600 bg-rose-50 hover:bg-rose-100 transition-colors">
+        <button type="button" id="btn-reset" class="px-4 py-2 rounded-xl text-xs font-bold text-rose-600 bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-100 transition-colors">
           Hapus Semua Data
         </button>
       </div>
 
-      <!-- Reset Confirmation Banner -->
-      <div id="reset-confirm" class="hidden bg-rose-50 border border-rose-200 rounded-xl p-4 flex items-center justify-between gap-4">
-        <p class="text-sm font-semibold text-rose-800">Apakah Anda yakin ingin mengosongkan seluruh database transaksi?</p>
+      <div id="reset-confirm" class="hidden bg-rose-50 dark:bg-rose-950/60 border border-rose-200 dark:border-rose-900 rounded-xl p-4 flex items-center justify-between gap-4">
+        <p class="text-sm font-semibold text-rose-800 dark:text-rose-200">Apakah Anda yakin ingin mengosongkan seluruh database transaksi?</p>
         <div class="flex gap-2">
           <button type="button" id="reset-yes" class="px-3.5 py-1.5 bg-rose-600 text-white rounded-lg text-xs font-bold">Ya, Hapus Database</button>
-          <button type="button" id="reset-no" class="px-3.5 py-1.5 bg-white text-slate-600 border border-slate-200 rounded-lg text-xs font-bold">Batal</button>
+          <button type="button" id="reset-no" class="px-3.5 py-1.5 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-bold">Batal</button>
         </div>
       </div>
     </section>
 
-    <!-- PANEL ANALYTICS HASIL FILTER (DINAMIS & REAL-TIME) -->
-    <section id="filter-analytics-panel" class="bg-indigo-900 text-white rounded-2xl p-6 shadow-md space-y-4">
-      <div class="flex flex-col md:flex-row md:items-center justify-between gap-2 border-b border-indigo-800 pb-3">
+    <!-- PANEL ANALYTICS FILTER -->
+    <section id="filter-analytics-panel" class="bg-indigo-900 dark:bg-slate-900 text-white rounded-2xl p-6 shadow-md space-y-4 border dark:border-slate-800">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-2 border-b border-indigo-800 dark:border-slate-800 pb-3">
         <div class="flex items-center gap-2">
           <i data-lucide="line-chart" class="w-5 h-5 text-indigo-300"></i>
           <h3 id="analytics-title" class="font-extrabold text-base tracking-wide text-indigo-100">Analisis Perolehan Filter</h3>
         </div>
-        <span id="analytics-badge" class="bg-indigo-700 text-indigo-200 text-xs px-3 py-1 rounded-full font-bold self-start md:self-auto">Semua Data</span>
+        <span id="analytics-badge" class="bg-indigo-700 dark:bg-slate-800 text-indigo-200 dark:text-slate-300 text-xs px-3 py-1 rounded-full font-bold self-start md:self-auto">Semua Data</span>
       </div>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div class="bg-indigo-950/60 p-4 rounded-xl border border-indigo-800/50">
+        <div class="bg-indigo-950/60 dark:bg-slate-950 p-4 rounded-xl border border-indigo-800/50 dark:border-slate-800">
           <p class="text-[11px] font-bold uppercase tracking-wider text-indigo-300">Total Perolehan Filter</p>
           <p id="ana-nominal" class="text-xl font-extrabold text-emerald-400 mt-1">Rp 0</p>
           <p id="ana-sub-nominal" class="text-[10px] text-indigo-300 mt-0.5">Pemasukan Terfilter</p>
         </div>
-
-        <div class="bg-indigo-950/60 p-4 rounded-xl border border-indigo-800/50">
+        <div class="bg-indigo-950/60 dark:bg-slate-950 p-4 rounded-xl border border-indigo-800/50 dark:border-slate-800">
           <p class="text-[11px] font-bold uppercase tracking-wider text-indigo-300">Kontribusi Terhadap Total Pemasukan Kas</p>
           <p id="ana-share-kas" class="text-xl font-extrabold text-amber-300 mt-1">0%</p>
           <p id="ana-sub-kas" class="text-[10px] text-indigo-300 mt-0.5">dari total kas masuk</p>
         </div>
-
-        <div class="bg-indigo-950/60 p-4 rounded-xl border border-indigo-800/50">
+        <div class="bg-indigo-950/60 dark:bg-slate-950 p-4 rounded-xl border border-indigo-800/50 dark:border-slate-800">
           <p class="text-[11px] font-bold uppercase tracking-wider text-indigo-300">Kontribusi Terhadap Target Anggaran</p>
           <p id="ana-share-target" class="text-xl font-extrabold text-sky-300 mt-1">0%</p>
           <p id="ana-sub-target" class="text-[10px] text-indigo-300 mt-0.5">dari target anggaran</p>
         </div>
-
-        <div class="bg-indigo-950/60 p-4 rounded-xl border border-indigo-800/50">
+        <div class="bg-indigo-950/60 dark:bg-slate-950 p-4 rounded-xl border border-indigo-800/50 dark:border-slate-800">
           <p class="text-[11px] font-bold uppercase tracking-wider text-indigo-300">Rata-rata Nominal Transaksi</p>
           <p id="ana-avg" class="text-xl font-extrabold text-indigo-200 mt-1">Rp 0</p>
           <p id="ana-sub-avg" class="text-[10px] text-indigo-300 mt-0.5">per transaksi terfilter</p>
@@ -321,8 +344,8 @@
       </div>
     </section>
 
-    <!-- Table -->
-    <section class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
+    <!-- TABLE -->
+    <section class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm overflow-hidden">
       <div class="overflow-x-auto">
         <table class="w-full text-sm text-left">
           <thead class="bg-slate-900 text-white text-xs font-bold uppercase tracking-wider">
@@ -338,7 +361,7 @@
               <th class="px-4 py-3.5 text-center w-28 no-print">Aksi</th>
             </tr>
           </thead>
-          <tbody id="tx-body" class="divide-y divide-slate-100 font-medium"></tbody>
+          <tbody id="tx-body" class="divide-y divide-slate-100 dark:divide-slate-800 font-medium"></tbody>
         </table>
       </div>
       <div id="empty-msg" class="text-center text-slate-400 py-12 text-sm">
@@ -350,13 +373,13 @@
 
   <!-- MODAL EDIT TRANSAKSI -->
   <div id="modal-edit" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4 no-print">
-    <div class="bg-white rounded-2xl border border-slate-200 shadow-2xl w-full max-w-lg p-6 space-y-5">
-      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+    <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xl w-full max-w-lg p-6 space-y-5">
+      <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
         <div class="flex items-center gap-2">
-          <div class="p-2 bg-amber-50 text-amber-600 rounded-lg">
+          <div class="p-2 bg-amber-50 dark:bg-amber-950 text-amber-600 dark:text-amber-400 rounded-lg">
             <i data-lucide="edit-3" class="w-5 h-5"></i>
           </div>
-          <h3 class="text-base font-bold text-slate-900">Edit Data Transaksi</h3>
+          <h3 class="text-base font-bold text-slate-900 dark:text-white">Edit Data Transaksi</h3>
         </div>
         <button type="button" id="btn-close-edit" class="text-slate-400 hover:text-slate-600 p-1">
           <i data-lucide="x" class="w-5 h-5"></i>
@@ -367,12 +390,12 @@
         <input type="hidden" id="edit-id">
         <div class="grid grid-cols-2 gap-3">
           <div>
-            <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Tanggal</label>
-            <input id="edit-tanggal" type="date" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-medium focus:ring-2 focus:ring-amber-500 outline-none" required>
+            <label class="block text-xs font-bold uppercase text-slate-600 dark:text-slate-400 mb-1">Tanggal</label>
+            <input id="edit-tanggal" type="date" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-white rounded-xl px-3 py-2 text-sm font-medium focus:ring-2 focus:ring-amber-500 outline-none" required>
           </div>
           <div>
-            <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Jenis</label>
-            <select id="edit-jenis" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-medium focus:ring-2 focus:ring-amber-500 outline-none" required>
+            <label class="block text-xs font-bold uppercase text-slate-600 dark:text-slate-400 mb-1">Jenis</label>
+            <select id="edit-jenis" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-white rounded-xl px-3 py-2 text-sm font-medium focus:ring-2 focus:ring-amber-500 outline-none" required>
               <option value="debit">Debit (Masuk)</option>
               <option value="kredit">Kredit (Keluar)</option>
             </select>
@@ -380,14 +403,33 @@
         </div>
 
         <div>
-          <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Nama Transaksi / RT</label>
-          <input id="edit-nama" type="text" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-medium focus:ring-2 focus:ring-amber-500 outline-none" required>
+          <label class="block text-xs font-bold uppercase text-slate-600 dark:text-slate-400 mb-1">Nama Transaksi / RT</label>
+          <select id="edit-rt-select" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-white rounded-xl px-3 py-2 text-sm font-medium focus:ring-2 focus:ring-amber-500 outline-none" required>
+            <option value="">-- Pilih Wilayah RT / Manual --</option>
+            <option value="RT.001">RT.001</option>
+            <option value="RT.002">RT.002</option>
+            <option value="RT.003">RT.003</option>
+            <option value="RT.004">RT.004</option>
+            <option value="RT.006">RT.006</option>
+            <option value="RT.007">RT.007</option>
+            <option value="RT.008">RT.008</option>
+            <option value="RT.009">RT.009</option>
+            <option value="RT.010">RT.010</option>
+            <option value="RT.011">RT.011</option>
+            <option value="RT.012">RT.012</option>
+            <option value="RT.013">RT.013</option>
+            <option value="RT.014">RT.014</option>
+            <option value="RT.015">RT.015</option>
+            <option value="RT.06">RT.06</option>
+            <option value="MANUAL">-- Ketik Manual... --</option>
+          </select>
+          <input id="edit-nama" type="text" placeholder="Masukkan Nama Transaksi..." class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-white rounded-xl px-3 py-2 text-sm font-medium focus:ring-2 focus:ring-amber-500 outline-none mt-2 hidden">
         </div>
 
         <div class="grid grid-cols-2 gap-3">
           <div>
-            <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Kategori</label>
-            <select id="edit-kategori" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-medium focus:ring-2 focus:ring-amber-500 outline-none" required>
+            <label class="block text-xs font-bold uppercase text-slate-600 dark:text-slate-400 mb-1">Kategori</label>
+            <select id="edit-kategori" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-white rounded-xl px-3 py-2 text-sm font-medium focus:ring-2 focus:ring-amber-500 outline-none" required>
               <option value="LIST">List Warga</option>
               <option value="Sponsorship">Sponsorship / Donasi</option>
               <option value="Hadiah & Lomba">Hadiah & Lomba</option>
@@ -399,18 +441,18 @@
             </select>
           </div>
           <div>
-            <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Nominal (Rp)</label>
-            <input id="edit-nominal" type="number" min="0" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-medium focus:ring-2 focus:ring-amber-500 outline-none" required>
+            <label class="block text-xs font-bold uppercase text-slate-600 dark:text-slate-400 mb-1">Nominal (Rp)</label>
+            <input id="edit-nominal" type="number" min="0" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-white rounded-xl px-3 py-2 text-sm font-medium focus:ring-2 focus:ring-amber-500 outline-none" required>
           </div>
         </div>
 
         <div>
-          <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Keterangan</label>
-          <input id="edit-ket" type="text" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-medium focus:ring-2 focus:ring-amber-500 outline-none">
+          <label class="block text-xs font-bold uppercase text-slate-600 dark:text-slate-400 mb-1">Keterangan</label>
+          <input id="edit-ket" type="text" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-white rounded-xl px-3 py-2 text-sm font-medium focus:ring-2 focus:ring-amber-500 outline-none">
         </div>
 
-        <div class="flex justify-end gap-2 pt-2 border-t border-slate-100">
-          <button type="button" id="btn-cancel-edit" class="px-4 py-2 bg-slate-100 text-slate-600 rounded-xl text-xs font-bold hover:bg-slate-200">Batal</button>
+        <div class="flex justify-end gap-2 pt-2 border-t border-slate-100 dark:border-slate-800">
+          <button type="button" id="btn-cancel-edit" class="px-4 py-2 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-xl text-xs font-bold">Batal</button>
           <button type="submit" id="btn-save-edit" class="px-5 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-bold shadow-sm flex items-center gap-1.5">
             <i data-lucide="save" class="w-4 h-4"></i> Update Data
           </button>
@@ -419,42 +461,56 @@
     </div>
   </div>
 
-  <!-- MODAL GANTI PASSWORD -->
+  <!-- MODAL GANTI PASSWORD & SETTING KUNCI -->
   <div id="modal-pass" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4 no-print">
-    <div class="bg-white rounded-2xl border border-slate-200 shadow-2xl w-full max-w-md p-6 space-y-5">
-      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+    <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xl w-full max-w-md p-6 space-y-5">
+      <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
         <div class="flex items-center gap-2">
-          <div class="p-2 bg-amber-50 text-amber-600 rounded-lg">
+          <div class="p-2 bg-amber-50 dark:bg-amber-950 text-amber-600 dark:text-amber-400 rounded-lg">
             <i data-lucide="key" class="w-5 h-5"></i>
           </div>
-          <h3 class="text-base font-bold text-slate-900">Pengaturan Password</h3>
+          <h3 class="text-base font-bold text-slate-900 dark:text-white">Keamanan & Password</h3>
         </div>
         <button type="button" id="btn-close-pass" class="text-slate-400 hover:text-slate-600 p-1">
           <i data-lucide="x" class="w-5 h-5"></i>
         </button>
       </div>
 
+      <!-- FITUR TOGGLE ON / OFF KUNCI APLIKASI -->
+      <div class="bg-slate-50 dark:bg-slate-800/80 p-4 rounded-xl border border-slate-200 dark:border-slate-700/60 flex items-center justify-between">
+        <div class="space-y-0.5 pr-2">
+          <p class="text-xs font-extrabold text-slate-900 dark:text-white">Kunci Keamanan Input/Edit/Hapus</p>
+          <p class="text-[11px] text-slate-500 dark:text-slate-400">Jika OFF, Anda dapat input/hapus data lebih cepat tanpa repot ketik password.</p>
+        </div>
+        <label class="relative inline-flex items-center cursor-pointer flex-shrink-0">
+          <input type="checkbox" id="toggle-lock-mode" class="sr-only peer">
+          <div class="w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:after:border-slate-600 peer-checked:bg-emerald-600"></div>
+        </label>
+      </div>
+
+      <hr class="border-slate-100 dark:border-slate-800">
+
       <form id="pass-form" class="space-y-4">
         <div>
-          <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Password Lama</label>
-          <input id="pass-old" type="password" placeholder="Masukkan password lama..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-medium focus:ring-2 focus:ring-amber-500 outline-none" required>
+          <label class="block text-xs font-bold uppercase text-slate-600 dark:text-slate-400 mb-1">Password Lama</label>
+          <input id="pass-old" type="password" placeholder="Masukkan password lama..." class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-white rounded-xl px-3 py-2 text-sm font-medium focus:ring-2 focus:ring-amber-500 outline-none" required>
         </div>
 
         <div>
-          <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Password Baru</label>
-          <input id="pass-new" type="password" placeholder="Masukkan password baru..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-medium focus:ring-2 focus:ring-amber-500 outline-none" required>
+          <label class="block text-xs font-bold uppercase text-slate-600 dark:text-slate-400 mb-1">Password Baru</label>
+          <input id="pass-new" type="password" placeholder="Masukkan password baru..." class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-white rounded-xl px-3 py-2 text-sm font-medium focus:ring-2 focus:ring-amber-500 outline-none" required>
         </div>
 
         <div>
-          <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Konfirmasi Password Baru</label>
-          <input id="pass-confirm" type="password" placeholder="Ulangi password baru..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-medium focus:ring-2 focus:ring-amber-500 outline-none" required>
+          <label class="block text-xs font-bold uppercase text-slate-600 dark:text-slate-400 mb-1">Konfirmasi Password Baru</label>
+          <input id="pass-confirm" type="password" placeholder="Ulangi password baru..." class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-white rounded-xl px-3 py-2 text-sm font-medium focus:ring-2 focus:ring-amber-500 outline-none" required>
         </div>
 
         <p id="pass-msg-err" class="text-xs text-rose-600 font-bold hidden"></p>
 
-        <div class="flex justify-end gap-2 pt-2 border-t border-slate-100">
-          <button type="button" id="btn-cancel-pass" class="px-4 py-2 bg-slate-100 text-slate-600 rounded-xl text-xs font-bold hover:bg-slate-200">Batal</button>
-          <button type="submit" id="btn-save-pass" class="px-5 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-bold shadow-sm flex items-center gap-1.5">
+        <div class="flex justify-end gap-2 pt-2 border-t border-slate-100 dark:border-slate-800">
+          <button type="button" id="btn-cancel-pass" class="px-4 py-2 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-xl text-xs font-bold">Batal</button>
+          <button type="submit" id="btn-save-pass" class="px-5 py-2 bg-slate-900 dark:bg-emerald-600 hover:bg-slate-800 text-white rounded-xl text-xs font-bold shadow-sm flex items-center gap-1.5">
             <i data-lucide="save" class="w-4 h-4"></i> Simpan Password Baru
           </button>
         </div>
@@ -471,6 +527,75 @@
     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
     let currentAdminPassword = '81';
+
+    // ==========================================
+    // LOGIKA SELEKSI INPUT RT vs MANUAL
+    // ==========================================
+    function setupRTInputToggle(selectId, inputId) {
+      const selectElem = $(selectId);
+      const inputElem = $(inputId);
+
+      if (!selectElem || !inputElem) return;
+
+      selectElem.addEventListener('change', () => {
+        if (selectElem.value === 'MANUAL') {
+          inputElem.classList.remove('hidden');
+          inputElem.required = true;
+          inputElem.focus();
+        } else {
+          inputElem.classList.add('hidden');
+          inputElem.required = false;
+          inputElem.value = '';
+        }
+      });
+    }
+
+    setupRTInputToggle('inp-rt-select', 'inp-nama');
+    setupRTInputToggle('edit-rt-select', 'edit-nama');
+
+    // ==========================================
+    // INTEGRASI DARK MODE
+    // ==========================================
+    const btnToggleDark = $('btn-toggle-dark');
+    if (localStorage.getItem('theme') === 'dark') {
+      document.documentElement.classList.add('dark');
+    }
+    btnToggleDark.addEventListener('click', () => {
+      document.documentElement.classList.toggle('dark');
+      localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+    });
+
+    // ==========================================
+    // SYNC OFFLINE QUEUE (PWA)
+    // ==========================================
+    const OFFLINE_KEY = 'offline_tx_queue';
+
+    function getOfflineQueue() {
+      return JSON.parse(localStorage.getItem(OFFLINE_KEY) || '[]');
+    }
+
+    function saveOfflineQueue(queue) {
+      localStorage.setItem(OFFLINE_KEY, JSON.stringify(queue));
+    }
+
+    async function syncOfflineData() {
+      if (!navigator.onLine) return;
+      const queue = getOfflineQueue();
+      if (!queue.length) return;
+
+      try {
+        const { error } = await supabase.from('transactions').insert(queue);
+        if (!error) {
+          alert(`Berhasil mengunggah ${queue.length} transaksi offline ke database cloud!`);
+          localStorage.removeItem(OFFLINE_KEY);
+          loadDataFromSupabase();
+        }
+      } catch (err) {
+        console.error('Gagal sinkronisasi data offline:', err);
+      }
+    }
+
+    window.addEventListener('online', syncOfflineData);
 
     async function fetchAdminPassword() {
       try {
@@ -496,6 +621,7 @@
       if (sessionStorage.getItem('app_authenticated') === 'true') {
         loginOverlay.classList.add('hidden');
         loadDataFromSupabase();
+        syncOfflineData();
       } else {
         loginOverlay.classList.remove('hidden');
       }
@@ -511,6 +637,7 @@
         loginPass.value = '';
         loginOverlay.classList.add('hidden');
         loadDataFromSupabase();
+        syncOfflineData();
       } else {
         loginErr.classList.remove('hidden');
         loginPass.value = '';
@@ -525,7 +652,16 @@
       });
     }
 
+    // FUNGSI VERIFIKASI PASSWORD (MEMPERHITUNGKAN KUNCI APLIKASI ON/OFF)
     function verifyPassword() {
+      const isLockEnabled = localStorage.getItem('app_lock_enabled') !== 'false'; // Default TRUE
+
+      // Jika KUNCI DINONAKTIFKAN (OFF), izinkan aksi langsung
+      if (!isLockEnabled) {
+        return true;
+      }
+
+      // Jika KUNCI AKTIF (ON), minta kata sandi
       const pass = prompt('Masukkan Password Panitia / Admin untuk melanjutkan aksi:');
       if (pass === currentAdminPassword) {
         return true;
@@ -581,12 +717,16 @@
       const q = $('inp-cari').value.toLowerCase().trim();
       const jenis = $('filter-jenis').value;
       const kategori = $('filter-kategori').value;
+      const startDate = $('filter-start-date').value;
+      const endDate = $('filter-end-date').value;
 
       return allData
         .filter(r => {
           if (q && !(r.nama||'').toLowerCase().includes(q) && !(r.keterangan||'').toLowerCase().includes(q)) return false;
           if (jenis && r.jenis !== jenis) return false;
           if (kategori && r.kategori !== kategori) return false;
+          if (startDate && r.tanggal < startDate) return false;
+          if (endDate && r.tanggal > endDate) return false;
           return true;
         })
         .sort((a,b) => (a.tanggal||'').localeCompare(b.tanggal||''));
@@ -631,7 +771,34 @@
       });
     }
 
-    // HANDLER ANALYTICS KHUSUS FILTER (DINAMIS)
+    // BREAKDOWN AUTOMATIS PEMASUKAN PER RT
+    function renderRTBreakdown() {
+      const container = $('rt-breakdown-container');
+      if (!container) return;
+
+      const rtMap = {};
+      allData.filter(r => r.jenis === 'debit').forEach(r => {
+        const match = (r.nama || '').match(/RT\s*[\.\-]?\s*(\d+)/i);
+        if (match) {
+          const rtKey = `RT.${match[1].padStart(3, '0')}`;
+          rtMap[rtKey] = (rtMap[rtKey] || 0) + (r.nominal || 0);
+        }
+      });
+
+      const sortedRT = Object.keys(rtMap).sort();
+      if (!sortedRT.length) {
+        container.innerHTML = `<p class="text-xs text-slate-400 col-span-full">Belum ada pemasukan terdeteksi dengan format nama RT.</p>`;
+        return;
+      }
+
+      container.innerHTML = sortedRT.map(rt => `
+        <div class="bg-slate-50 dark:bg-slate-800/60 p-3 rounded-xl border border-slate-200/60 dark:border-slate-800">
+          <p class="text-[10px] font-bold text-slate-400 uppercase">${rt}</p>
+          <p class="text-sm font-extrabold text-emerald-600 dark:text-emerald-400 mt-1">${fmt(rtMap[rt])}</p>
+        </div>
+      `).join('');
+    }
+
     function updateFilterAnalytics(filtered, totalInOverall) {
       const q = $('inp-cari').value.trim();
       const kat = $('filter-kategori').value;
@@ -659,14 +826,12 @@
       $('ana-nominal').textContent = fmt(mainNominal);
       $('ana-sub-nominal').textContent = isKreditOnly ? 'Pengeluaran Terfilter' : 'Pemasukan Terfilter';
 
-      // Persentase Kontribusi
       const shareKas = totalInOverall > 0 ? Math.min(100, ((totalInFiltered / totalInOverall) * 100)).toFixed(1) : 0;
       $('ana-share-kas').textContent = shareKas + '%';
 
       const shareTarget = targetBudget > 0 ? Math.min(100, ((totalInFiltered / targetBudget) * 100)).toFixed(1) : 0;
       $('ana-share-target').textContent = shareTarget + '%';
 
-      // Rata-rata nominal per transaksi
       const avgNominal = filtered.length > 0 ? Math.round(mainNominal / filtered.length) : 0;
       $('ana-avg').textContent = fmt(avgNominal);
     }
@@ -690,6 +855,7 @@
 
       updateCharts(totalIn, totalOut);
       updateFilterAnalytics(filtered, totalIn);
+      renderRTBreakdown();
 
       const tbody = $('tx-body');
       const emptyMsg = $('empty-msg');
@@ -704,23 +870,23 @@
       let saldo = 0;
       const rows = filtered.map((r,i) => {
         saldo += r.jenis === 'debit' ? (r.nominal||0) : -(r.nominal||0);
-        return `<tr class="hover:bg-slate-50 transition-colors">
+        return `<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
           <td class="px-4 py-3 text-center text-slate-400 font-normal">${i+1}</td>
-          <td class="px-4 py-3 text-slate-600">${r.tanggal||'-'}</td>
-          <td class="px-4 py-3 font-bold text-slate-800">${r.nama||'-'}</td>
-          <td class="px-4 py-3"><span class="bg-slate-100 text-slate-700 text-xs px-2.5 py-1 rounded-md font-semibold">${r.kategori||'Umum'}</span></td>
-          <td class="px-4 py-3 text-slate-500 font-normal">${r.keterangan||'-'}</td>
-          <td class="px-4 py-3 text-right font-bold text-emerald-600">${r.jenis==='debit'?fmt(r.nominal):'-'}</td>
-          <td class="px-4 py-3 text-right font-bold text-rose-600">${r.jenis==='kredit'?fmt(r.nominal):'-'}</td>
-          <td class="px-4 py-3 text-right font-extrabold text-slate-900">${fmt(saldo)}</td>
+          <td class="px-4 py-3 text-slate-600 dark:text-slate-300">${r.tanggal||'-'}</td>
+          <td class="px-4 py-3 font-bold text-slate-800 dark:text-slate-100">${r.nama||'-'}</td>
+          <td class="px-4 py-3"><span class="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs px-2.5 py-1 rounded-md font-semibold">${r.kategori||'Umum'}</span></td>
+          <td class="px-4 py-3 text-slate-500 dark:text-slate-400 font-normal">${r.keterangan||'-'}</td>
+          <td class="px-4 py-3 text-right font-bold text-emerald-600 dark:text-emerald-400">${r.jenis==='debit'?fmt(r.nominal):'-'}</td>
+          <td class="px-4 py-3 text-right font-bold text-rose-600 dark:text-rose-400">${r.jenis==='kredit'?fmt(r.nominal):'-'}</td>
+          <td class="px-4 py-3 text-right font-extrabold text-slate-900 dark:text-white">${fmt(saldo)}</td>
           <td class="px-4 py-3 text-center space-x-1 no-print">
-            <button type="button" class="text-slate-500 hover:text-amber-600 p-1.5 rounded-lg hover:bg-amber-50 transition-colors inline-flex items-center justify-center" title="Edit Data" onclick="openEditModal('${r.id}')">
+            <button type="button" class="text-slate-500 hover:text-amber-600 p-1.5 rounded-lg hover:bg-amber-50 dark:hover:bg-amber-950 transition-colors inline-flex items-center justify-center" title="Edit Data" onclick="openEditModal('${r.id}')">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
             </button>
-            <button type="button" class="text-slate-500 hover:text-sky-600 p-1.5 rounded-lg hover:bg-sky-50 transition-colors inline-flex items-center justify-center" title="Cetak Kwitansi" onclick="printReceipt('${r.id}')">
+            <button type="button" class="text-slate-500 hover:text-sky-600 p-1.5 rounded-lg hover:bg-sky-50 dark:hover:bg-sky-950 transition-colors inline-flex items-center justify-center" title="Cetak Kwitansi PDF" onclick="printReceiptPDF('${r.id}')">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 6v12"/></svg>
             </button>
-            <button type="button" class="text-slate-500 hover:text-rose-600 p-1.5 rounded-lg hover:bg-rose-50 transition-colors inline-flex items-center justify-center" title="Hapus Baris" data-del="${r.id}">
+            <button type="button" class="text-slate-500 hover:text-rose-600 p-1.5 rounded-lg hover:bg-rose-50 dark:hover:bg-rose-950 transition-colors inline-flex items-center justify-center" title="Hapus Baris" data-del="${r.id}">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
             </button>
           </td>
@@ -740,7 +906,7 @@
       });
     }
 
-    // Modal Edit Functions
+    // EDIT MODAL
     window.openEditModal = function(id) {
       if (!verifyPassword()) return;
 
@@ -750,7 +916,21 @@
       $('edit-id').value = item.id;
       $('edit-tanggal').value = item.tanggal;
       $('edit-jenis').value = item.jenis;
-      $('edit-nama').value = item.nama;
+      
+      const rtSelect = $('edit-rt-select');
+      const namaInput = $('edit-nama');
+      
+      const options = Array.from(rtSelect.options).map(o => o.value);
+      if (options.includes(item.nama)) {
+        rtSelect.value = item.nama;
+        namaInput.classList.add('hidden');
+        namaInput.value = '';
+      } else {
+        rtSelect.value = 'MANUAL';
+        namaInput.classList.remove('hidden');
+        namaInput.value = item.nama;
+      }
+
       $('edit-kategori').value = item.kategori;
       $('edit-nominal').value = item.nominal;
       $('edit-ket').value = item.keterangan || '';
@@ -770,11 +950,14 @@
       const btn = $('btn-save-edit');
       btn.disabled = true;
 
+      const rtSel = $('edit-rt-select').value;
+      const namaVal = rtSel === 'MANUAL' ? $('edit-nama').value : rtSel;
+
       const id = $('edit-id').value;
       const updatedTx = {
         tanggal: $('edit-tanggal').value,
         jenis: $('edit-jenis').value,
-        nama: $('edit-nama').value,
+        nama: namaVal,
         kategori: $('edit-kategori').value,
         nominal: Number($('edit-nominal').value) || 0,
         keterangan: $('edit-ket').value
@@ -791,19 +974,42 @@
       }
     });
 
-    // HANDLER GANTI PASSWORD
+    // PASSWORD MODAL & LOGIKA TOGGLE LOCK
     const modalPass = $('modal-pass');
     const btnChangePass = $('btn-change-pass');
     const btnClosePass = $('btn-close-pass');
     const btnCancelPass = $('btn-cancel-pass');
     const passForm = $('pass-form');
     const passMsgErr = $('pass-msg-err');
+    const toggleLockMode = $('toggle-lock-mode');
+
+    // Load Status Toggle dari LocalStorage
+    const isLockEnabled = localStorage.getItem('app_lock_enabled') !== 'false';
+    toggleLockMode.checked = isLockEnabled;
+
+    toggleLockMode.addEventListener('change', (e) => {
+      const isChecked = e.target.checked;
+      
+      // Jika mencoba mematikan kunci, konfirmasi password demi keamanan
+      if (!isChecked) {
+        const pass = prompt('Masukkan Password untuk mematikan kunci keamanan:');
+        if (pass !== currentAdminPassword) {
+          alert('Password Salah! Kunci tetap aktif.');
+          e.target.checked = true;
+          return;
+        }
+      }
+
+      localStorage.setItem('app_lock_enabled', isChecked ? 'true' : 'false');
+      alert(isChecked ? 'Kunci Keamanan Diaktifkan' : 'Kunci Keamanan Dinonaktifkan (Mode Penginputan Cepat)');
+    });
 
     function openPassModal() {
       $('pass-old').value = '';
       $('pass-new').value = '';
       $('pass-confirm').value = '';
       passMsgErr.classList.add('hidden');
+      toggleLockMode.checked = localStorage.getItem('app_lock_enabled') !== 'false';
       modalPass.classList.remove('hidden');
     }
 
@@ -858,47 +1064,61 @@
 
     $('btn-save-target').addEventListener('click', saveTarget);
 
-    window.printReceipt = function(id) {
+    // CETAK KWITANSI MULTI-PAGE/FORMAT PROPER VIA jsPDF
+    window.printReceiptPDF = function(id) {
       const item = allData.find(r => r.id === id);
       if (!item) return;
-      const win = window.open('', '_blank');
-      win.document.write(`
-        <html>
-        <head>
-          <title>Kwitansi - ${item.nama}</title>
-          <style>
-            body { font-family: Arial, sans-serif; padding: 30px; border: 2px solid #0f172a; border-radius: 10px; max-width: 500px; margin: auto; }
-            h2 { text-align: center; color: #0f172a; margin-bottom: 5px; }
-            p { font-size: 14px; color: #475569; margin: 4px 0; }
-            .amount { font-size: 20px; font-weight: bold; color: #059669; text-align: center; margin: 20px 0; padding: 10px; background: #f0fdf4; border-radius: 8px; }
-            .footer { margin-top: 30px; text-align: right; font-size: 12px; }
-          </style>
-        </head>
-        <body>
-          <h2>BUKTI TRANSAKSI PANITIA HUT RI-81</h2>
-          <hr>
-          <p><strong>ID Transaksi:</strong> ${item.id}</p>
-          <p><strong>Tanggal:</strong> ${item.tanggal}</p>
-          <p><strong>Nama Transaksi / RT:</strong> ${item.nama}</p>
-          <p><strong>Kategori:</strong> ${item.kategori}</p>
-          <p><strong>Keterangan:</strong> ${item.keterangan || '-'}</p>
-          <div class="amount">${item.jenis === 'debit' ? '[MASUK] ' : '[KELUAR] '} ${fmt(item.nominal)}</div>
-          <div class="footer">
-            <p>RW.01, ${item.tanggal}</p>
-            <br><br>
-            <p><strong>Bendahara Panitia</strong></p>
-          </div>
-          <script>window.print();<\/script>
-        </body>
-        </html>
-      `);
-      win.document.close();
+
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF('p', 'mm', [100, 150]);
+
+      doc.setFillColor(15, 23, 42);
+      doc.rect(0, 0, 100, 20, 'F');
+
+      doc.setTextColor(255, 255, 255);
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(10);
+      doc.text('BUKTI TRANSAKSI KAS RW.01', 50, 12, { align: 'center' });
+
+      doc.setTextColor(15, 23, 42);
+      doc.setFontSize(8);
+      doc.setFont('helvetica', 'normal');
+
+      doc.text(`ID Transaksi : ${item.id}`, 8, 30);
+      doc.text(`Tanggal      : ${item.tanggal}`, 8, 36);
+      doc.text(`Kategori     : ${item.kategori}`, 8, 42);
+      doc.text(`Pihak/RT     : ${item.nama}`, 8, 48);
+      doc.text(`Keterangan   : ${item.keterangan || '-'}`, 8, 54);
+
+      doc.setFillColor(item.jenis === 'debit' ? 240 : 254, item.jenis === 'debit' ? 253 : 242, item.jenis === 'debit' ? 244 : 242);
+      doc.rect(8, 62, 84, 16, 'F');
+
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(11);
+      doc.setTextColor(item.jenis === 'debit' ? 5 : 225, item.jenis === 'debit' ? 150 : 29, item.jenis === 'debit' ? 105 : 72);
+      doc.text(`${item.jenis === 'debit' ? '[MASUK]' : '[KELUAR]'} ${fmt(item.nominal)}`, 50, 72, { align: 'center' });
+
+      doc.setTextColor(100, 116, 139);
+      doc.setFontSize(7);
+      doc.text('Panitia HUT RI ke-81 RW.01', 84, 115, { align: 'right' });
+      doc.text('Bendahara / Pengelola', 84, 130, { align: 'right' });
+
+      doc.save(`Kwitansi_${item.nama.replace(/\s+/g, '_')}.pdf`);
     };
 
+    // FORM SUBMIT (DUKUNGAN ONLINE & OFFLINE)
     $('tx-form').addEventListener('submit', async e => {
       e.preventDefault();
 
       if (!verifyPassword()) return;
+
+      const rtSel = $('inp-rt-select').value;
+      const namaVal = rtSel === 'MANUAL' ? $('inp-nama').value : rtSel;
+
+      if (!namaVal) {
+        alert('Silakan pilih RT atau ketik nama transaksi manual!');
+        return;
+      }
 
       const btn = $('btn-submit');
       btn.disabled = true;
@@ -906,12 +1126,25 @@
       const newTx = {
         id: 'tx_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6),
         tanggal: $('inp-tanggal').value,
-        nama: $('inp-nama').value,
+        nama: namaVal,
         kategori: $('inp-kategori').value,
         keterangan: $('inp-ket').value,
         jenis: $('inp-jenis').value,
         nominal: Number($('inp-nominal').value)||0
       };
+
+      if (!navigator.onLine) {
+        const queue = getOfflineQueue();
+        queue.push(newTx);
+        saveOfflineQueue(queue);
+        alert('Koneksi internet terputus. Transaksi berhasil disimpan sementara secara offline!');
+        e.target.reset();
+        $('inp-rt-select').value = '';
+        $('inp-nama').classList.add('hidden');
+        $('inp-tanggal').value = new Date().toISOString().slice(0,10);
+        btn.disabled = false;
+        return;
+      }
 
       const { error } = await supabase.from('transactions').insert([newTx]);
       btn.disabled = false;
@@ -920,12 +1153,14 @@
         alert('Gagal menyimpan ke Supabase: ' + error.message);
       } else {
         e.target.reset();
+        $('inp-rt-select').value = '';
+        $('inp-nama').classList.add('hidden');
         $('inp-tanggal').value = new Date().toISOString().slice(0,10);
         loadDataFromSupabase();
       }
     });
 
-    // HANDLER IMPORT FILE EXCEL / CSV
+    // IMPORT EXCEL
     $('btn-import').addEventListener('click', () => {
       if (!verifyPassword()) return;
       $('inp-file-excel').click();
@@ -1043,9 +1278,9 @@
 
     $('inp-tanggal').value = new Date().toISOString().slice(0,10);
 
-    ['inp-cari','filter-jenis','filter-kategori'].forEach(id => {
-      $(id).addEventListener('input', render);
-      $(id).addEventListener('change', render);
+    ['inp-cari','filter-jenis','filter-kategori','filter-start-date','filter-end-date'].forEach(id => {
+      $(id)?.addEventListener('input', render);
+      $(id)?.addEventListener('change', render);
     });
 
     $('btn-reset').addEventListener('click', () => $('reset-confirm').classList.remove('hidden'));
@@ -1060,7 +1295,7 @@
       loadDataFromSupabase();
     });
 
-    // Share to WA (Hasil Filter Terkini)
+    // SHARE WA
     $('btn-wa').addEventListener('click', () => {
       const filtered = getFiltered();
       const q = $('inp-cari').value.trim();
@@ -1088,7 +1323,7 @@
       window.open(`https://wa.me/?text=${text}`, '_blank');
     });
 
-    // PDF Export (Lengkap dengan Filter Header & Analytics Total)
+    // EXPORT LAPORAN PDF
     $('btn-pdf').addEventListener('click', () => {
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF('landscape');
@@ -1138,7 +1373,6 @@
         ];
       });
 
-      // Tambahkan Baris Total Akumulasi di Paling Bawah PDF
       body.push([
         { content: 'TOTAL AKUMULASI DARI FILTER DI ATAS', colSpan: 5, styles: { fontStyle: 'bold', halign: 'right' } },
         { content: fmt(totalDebit), styles: { fontStyle: 'bold', textColor: [5, 150, 105] } },
@@ -1158,7 +1392,7 @@
       doc.save(filename);
     });
 
-    // Excel Export (Sesuai Filter yang Dipilih)
+    // EXPORT EXCEL
     $('btn-excel').addEventListener('click', () => {
       const filtered = getFiltered();
       const q = $('inp-cari').value.trim();
@@ -1189,7 +1423,7 @@
       XLSX.writeFile(wb, filename);
     });
 
-    // Registrasi Service Worker PWA
+    // SERVICE WORKER REGISTRATION
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('./sw.js', { scope: './' })
