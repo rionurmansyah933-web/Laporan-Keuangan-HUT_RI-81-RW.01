@@ -75,7 +75,7 @@
 
     <!-- Hero / Title Section (Logo Kiri & Kanan) -->
 <div class="flex flex-row items-center justify-between gap-2 max-w-5xl mx-auto py-2 px-2">
-  
+
   <!-- Logo 1: Kiri (RW.01) -->
   <div class="flex-shrink-0">
     <img src="https://irbqorrvjkwzvoltftjl.supabase.co/storage/v1/object/public/dokumen-rw/1746898459176.png" alt="Logo RW.01" class="w-16 h-16 sm:w-24 sm:h-24 object-contain filter drop-shadow-[2px_2px_0px_#000]">
@@ -260,17 +260,36 @@
     </div>
   </div>
 
-  <!-- ================= MODAL VIEWER GAMBAR ================= -->
-  <div id="imageModal" class="hidden fixed inset-0 bg-black/70 backdrop-blur-xs z-50 flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl max-w-2xl w-full overflow-hidden nb-card">
+    <!-- ================= MODAL VIEWER GAMBAR & RINCIAN DANA ================= -->
+  <div id="imageModal" class="hidden fixed inset-0 bg-black/70 backdrop-blur-xs z-50 flex items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-white rounded-2xl max-w-xl w-full overflow-hidden nb-card my-8">
       <div class="p-3 border-b-3 border-black flex justify-between items-center bg-sky-300">
         <h3 id="imageTitle" class="font-black text-black text-xs sm:text-sm flex items-center gap-2">
-          <i data-lucide="image" class="w-4 h-4 text-black stroke-[3]"></i> VIEWER GAMBAR
+          <i data-lucide="image" class="w-4 h-4 text-black stroke-[3]"></i> DOKUMENTASI & RINCIAN DANA
         </h3>
         <button onclick="closeModal('imageModal')" class="bg-white p-1 rounded-lg nb-btn"><i data-lucide="x" class="w-5 h-5 stroke-[3]"></i></button>
       </div>
-      <div class="p-4 bg-amber-50 flex justify-center">
-        <img id="singleImage" src="" alt="Dokumen" class="max-h-[70vh] rounded-xl object-contain border-3 border-black shadow-[4px_4px_0px_0px_#000]">
+      <div class="p-4 bg-amber-50 space-y-4">
+        <!-- Foto -->
+        <div class="flex justify-center">
+          <img id="singleImage" src="" alt="Dokumen" class="max-h-[50vh] rounded-xl object-contain border-3 border-black shadow-[4px_4px_0px_0px_#000]">
+        </div>
+        
+        <!-- Kotak Rincian Pengeluaran Dana Real-Time -->
+        <div id="expenseInfoBox" class="bg-white rounded-xl p-4 border-3 border-black shadow-[3px_3px_0px_0px_#000] space-y-2">
+          <div class="flex justify-between items-center border-b-2 border-dashed border-slate-300 pb-2">
+            <span class="text-xs font-black bg-yellow-300 px-2 py-0.5 rounded-md border border-black">LAPORAN KEUANGAN KEGIATAN</span>
+            <span id="expenseDate" class="text-[10px] font-bold text-slate-500">-</span>
+          </div>
+          <div>
+            <h4 id="expenseTitle" class="text-sm font-black text-black">Nama Kegiatan / Lomba</h4>
+            <p id="expenseDesc" class="text-xs text-slate-700 mt-1 font-medium">Memuat rincian pengeluaran dana...</p>
+          </div>
+          <div class="bg-rose-100 p-2.5 rounded-lg border-2 border-black flex justify-between items-center">
+            <span class="text-xs font-black">TOTAL PENGELUARAN:</span>
+            <span id="expenseTotal" class="text-xs font-black text-rose-600">Rp 0</span>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -280,17 +299,17 @@
     <div class="bg-white rounded-2xl max-w-3xl w-full max-h-[85vh] flex flex-col overflow-hidden nb-card">
       <div class="p-3 border-b-3 border-black flex justify-between items-center bg-amber-300">
         <h3 class="font-black text-black text-xs sm:text-sm flex items-center gap-2">
-          <i data-lucide="image" class="w-4 h-4 text-black stroke-[3]"></i> DOKUMENTASI KEGIATAN & LOMBA
+          <i data-lucide="images" class="w-4 h-4 text-black stroke-[3]"></i> DOKUMENTASI KEGIATAN & LOMBA
         </h3>
         <button onclick="closeModal('galleryModal')" class="bg-white p-1 rounded-lg nb-btn"><i data-lucide="x" class="w-5 h-5 stroke-[3]"></i></button>
       </div>
+      <!-- Galeri dinamik yang terhubung ke data keuangan -->
       <div id="galleryGrid" class="p-4 overflow-y-auto grid grid-cols-2 sm:grid-cols-3 gap-3 bg-yellow-50">
-        <img src="https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&w=500&q=80" class="rounded-xl h-36 w-full object-cover border-2 border-black shadow-[3px_3px_0px_0px_#000] cursor-pointer hover:opacity-90" onclick="openImageModal(this.src, 'Foto Lomba Warga')">
-        <img src="https://images.unsplash.com/photo-1543269865-cbf427effbad?auto=format&fit=crop&w=500&q=80" class="rounded-xl h-36 w-full object-cover border-2 border-black shadow-[3px_3px_0px_0px_#000] cursor-pointer hover:opacity-90" onclick="openImageModal(this.src, 'Kegiatan Kerja Bakti')">
-        <img src="https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?auto=format&fit=crop&w=500&q=80" class="rounded-xl h-36 w-full object-cover border-2 border-black shadow-[3px_3px_0px_0px_#000] cursor-pointer hover:opacity-90" onclick="openImageModal(this.src, 'Perayaan HUT RI')">
+        <!-- Item akan dirender otomatis via Javascript -->
       </div>
     </div>
   </div>
+
 
   <script>
     // 1. SUPABASE CLIENT CONFIGURATION (Menggunakan URL & Key Asli Anda)
@@ -399,7 +418,7 @@
 
     function openPdfModal(url, title) {
       document.getElementById('pdfTitle').innerText = title;
-      
+
       // Jika di HP Chrome (seperti di screenshot), viewer bawaan browser sering di-block iframe,
       // Google Docs Viewer digunakan sebagai fallback otomatis agar PDF terbuka sempurna:
       const viewerUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(url)}&embedded=true`;
@@ -421,6 +440,95 @@
       if (id === 'pdfModal') document.getElementById('pdfFrame').src = '';
     }
 
+      // Contoh database data kegiatan & rincian pengeluaran (bisa disinkronkan dengan data localStorage index.html / Supabase)
+    const kegiatanData = [
+      {
+        url: "https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&w=500&q=80",
+        title: "Lomba Anak-Anak (Makan Kerupuk & Balap Karung)",
+        tanggal: "17 Agustus 2026",
+        deskripsi: "Pembelian kerupuk 5 pack, hadiah juara 1-3 (buku, pensil, mainan edukatif), dan konsumsi peserta anak.",
+        total: "Rp 350.000"
+      },
+      {
+        url: "https://images.unsplash.com/photo-1543269865-cbf427effbad?auto=format&fit=crop&w=500&q=80",
+        title: "Kerja Bakti Massal & Pengecatan Gapura",
+        tanggal: "10 Agustus 2026",
+        deskripsi: "Pembelian cat tembok merah putih 3 galon, kuas, tiner, serta konsumsi kerja bakti warga RT 01-05.",
+        total: "Rp 620.000"
+      },
+      {
+        url: "https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?auto=format&fit=crop&w=500&q=80",
+        title: "Malam Puncak & Panggung Gembira HUT RI-81",
+        tanggal: "18 Agustus 2026",
+        deskripsi: "Sewa sound system, terop/tenda, panggung, konsumsi undangan, dan hadiah utama jalan sehat.",
+        total: "Rp 2.450.000"
+      }
+    ];
+
+    // Fungsi untuk merender galeri secara dinamis beserta data keuangannya
+    function loadGalleryPhotos() {
+      const grid = document.getElementById('galleryGrid');
+      grid.innerHTML = '';
+
+      // Ambil data tambahan dari localStorage jika ada upload baru dari admin
+      let customGallery = JSON.parse(localStorage.getItem('rw_custom_gallery') || '[]');
+      let allPhotos = [...customGallery, ...kegiatanData];
+
+      allPhotos.forEach(item => {
+        const div = document.createElement('div');
+        div.className = "relative group cursor-pointer";
+        div.innerHTML = `
+          <img src="${item.url}" class="rounded-xl h-36 w-full object-cover border-2 border-black shadow-[3px_3px_0px_0px_#000] group-hover:opacity-90 transition-all">
+          <div class="absolute bottom-1 left-1 right-1 bg-black/70 backdrop-blur-xs text-white text-[9px] font-bold p-1 rounded-md truncate text-center">
+            ${item.title}
+          </div>
+        `;
+        // Saat diklik, panggil fungsi openImageModal dengan menyertakan data keuangannya
+        div.onclick = () => openImageModalWithExpense(item);
+        grid.appendChild(div);
+      });
+    }
+
+    // Fungsi untuk membuka modal gambar sekaligus menampilkan rincian dana
+    function openImageModalWithExpense(item) {
+      document.getElementById('imageTitle').innerText = item.title;
+      document.getElementById('singleImage').src = item.url;
+      
+      // Masukkan data rincian keuangan
+      document.getElementById('expenseTitle').innerText = item.title;
+      document.getElementById('expenseDate').innerText = item.tanggal || "HUT RI-81 2026";
+      document.getElementById('expenseDesc').innerText = item.deskripsi || "Rincian dana bersumber dari pembukuan kas panitia RW.01.";
+      document.getElementById('expenseTotal').innerText = item.total || "Rp 0";
+
+      openModal('imageModal');
+    }
+
+    // Modifikasi fungsi handleUploadFile saat admin mengunggah foto galeri baru
+    // Agar bisa otomatis memasukkan data pengeluaran (atau default)
+    function addPhotoToGallery(url) {
+      let customGallery = JSON.parse(localStorage.getItem('rw_custom_gallery') || '[]');
+      const newItem = {
+        url: url,
+        title: "Dokumentasi Baru Warga RW.01",
+        tanggal: new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }),
+        deskripsi: "Foto dokumentasi kegiatan yang diunggah langsung oleh pengurus melalui panel admin.",
+        total: "Menunggu Rekonsiliasi Kas"
+      };
+      customGallery.unshift(newItem);
+      localStorage.setItem('rw_custom_gallery', JSON.stringify(customGallery));
+      loadGalleryPhotos();
+    }
+
+    // Panggil loadGalleryPhotos saat halaman dimuat
+    document.addEventListener('DOMContentLoaded', () => {
+      lucide.createIcons();
+      loadGalleryPhotos();
+      document.getElementById('btnDownloadProposal').href = currentProposalUrl;
+      document.getElementById('btnDownloadStruktur').href = currentStrukturUrl;
+      document.getElementById('btnDownloadEdaran').href = currentEdaranUrl;
+    });
+
+  
     document.addEventListener('DOMContentLoaded', () => {
       lucide.createIcons();
       document.getElementById('btnDownloadProposal').href = currentProposalUrl;
